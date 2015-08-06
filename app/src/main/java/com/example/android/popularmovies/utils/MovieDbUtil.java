@@ -17,4 +17,14 @@ public class MovieDbUtil {
                 .appendPath(c.getString(R.string.moviedb_movie_path));
         return builder;
     }
+
+    /**
+     * Returns one of three thumbnails for a youtube video
+     * @param youtubeVideoKey
+     * @return
+     */
+    public static final String buildYouTubeThumbnailUrl(final Context context,
+                                                        final String youtubeVideoKey) {
+        return context.getString(R.string.youtube_video_thumbnail_url_template, youtubeVideoKey);
+    }
 }

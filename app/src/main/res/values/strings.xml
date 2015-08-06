@@ -66,6 +66,7 @@
     <string name="youtube_base_url">www.youtube.com</string>
     <string name="youtube_watch_path">watch</string>
     <string name="youtube_video_key_param">v</string>
+    <string name="youtube_video_thumbnail_url_template">http://img.youtube.com/vi/%s/default.jpg</string>
 
     <string name="moviedb_trailer_id_param">id</string>
     <string name="moviedb_trailer_site_param">site</string>
