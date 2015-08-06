@@ -81,11 +81,14 @@ public class MovieTrailerFragment extends Fragment {
     }
 
     private boolean needToRetrieveTrailers() {
-        return !movieTrailerAdapter.isLoading() && movieTrailerAdapter.getItemCount() == 0;
+        return !movieTrailerAdapter.isLoading()
+                && movieTrailerAdapter.getItemCount() == 0
+                && !movieTrailerAdapter.isNoDataFound();
     }
 
     private void retrieveTrailers(final Context context) {
         movieTrailerAdapter.setLoading(true);
+        movieTrailerAdapter.addItem(null);
         final String id = getActivity().getIntent()
                 .getStringExtra(getString(R.string.moviedb_id_param));
         new GetMovieTrailersTask(context, movieTrailerAdapter).execute(id);
