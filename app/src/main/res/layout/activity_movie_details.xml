@@ -51,8 +51,7 @@
 
                     <Space
                         android:layout_width="match_parent"
-                        android:layout_height="10dp"
-                        android:layout_gravity="center_horizontal" />
+                        android:layout_height="10dp" />
 
                     <fragment
                         android:id="@+id/movie_rating_fragment"
@@ -63,8 +62,7 @@
 
                     <Space
                         android:layout_width="match_parent"
-                        android:layout_height="5dp"
-                        android:layout_gravity="center_horizontal" />
+                        android:layout_height="5dp" />
 
                     <com.dd.CircularProgressButton
                         android:id="@+id/movie_review_button"
@@ -73,7 +71,6 @@
                         android:textColor="@color/cpb_white"
                         android:padding="0dp"
                         android:textSize="10sp"
-                        android:visibility="invisible"
                         app:cpb_selectorIdle="@android:color/black"
                         app:cpb_colorProgress="@android:color/black"
                         app:cpb_colorIndicatorBackground="@android:color/black"

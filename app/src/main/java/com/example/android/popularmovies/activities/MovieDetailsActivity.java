@@ -70,7 +70,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 (CircularProgressButton) findViewById(R.id.movie_review_button);
         circularProgressButton.setIndeterminateProgressMode(true);
         circularProgressButton.setProgress(1);
-        circularProgressButton.setVisibility(View.VISIBLE);
 
         final String idParam = getString(R.string.moviedb_id_param);
         final String movieId = getIntent().getStringExtra(idParam);
