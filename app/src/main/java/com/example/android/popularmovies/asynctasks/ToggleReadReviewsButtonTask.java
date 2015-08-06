@@ -41,9 +41,9 @@ public class ToggleReadReviewsButtonTask extends GetMovieDataTask<MovieReview> {
         if(getTotalResults() == 0) {
             circularProgressButton.setOnClickListener(null);
             circularProgressButton.setClickable(false);
-            circularProgressButton.setProgress(-1);
+            circularProgressButton.setProgress(-1); // displays error text
         } else {
-            circularProgressButton.setProgress(100);
+            circularProgressButton.setProgress(100); // displays success text
         }
     }
 
