@@ -76,7 +76,7 @@
     <string name="moviedb_trailer_type_trailer">Trailer</string>
     <string name="moviedb_trailer_na">No Trailers Found</string>
 
-    <string name="moviedb_trailer_button_label_prefix">View Trailer #</string>
+    <string name="moviedb_trailer_thumbnail_prefix">Trailer #</string>
 
     <string name="moviedb_review_id_param">id</string>
     <string name="moviedb_review_author_param">author</string>
