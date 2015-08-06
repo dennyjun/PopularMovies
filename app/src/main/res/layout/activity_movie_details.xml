@@ -64,19 +64,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="5dp" />
 
-                    <com.dd.CircularProgressButton
-                        android:id="@+id/movie_review_button"
-                        android:layout_width="80dp"
-                        android:layout_height="40dp"
-                        android:textColor="@color/cpb_white"
-                        android:padding="0dp"
-                        android:textSize="10sp"
-                        app:cpb_selectorIdle="@android:color/black"
-                        app:cpb_colorProgress="@android:color/black"
-                        app:cpb_colorIndicatorBackground="@android:color/black"
-                        app:cpb_cornerRadius="10dp"
-                        app:cpb_textError="No Reviews"
-                        app:cpb_textComplete="Read Reviews"/>
+                    <fragment
+                        android:id="@+id/movie_review_button_fragment"
+                        android:name="com.example.android.popularmovies.fragments.MovieReviewButtonFragment"
+                        tools:layout="@layout/fragment_movie_review_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
                 </LinearLayout>
             </LinearLayout>
 
