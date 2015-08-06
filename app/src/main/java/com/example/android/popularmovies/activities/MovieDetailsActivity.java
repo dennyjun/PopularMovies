@@ -44,6 +44,11 @@ public class MovieDetailsActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        loadPoster();
+        initOpenReviewButton();
+    }
+
+    private void loadPoster() {
         final String posterUrl =
                 Movie.buildPosterUrl(this, getIntent().getStringExtra(getString(R.string.moviedb_poster_path_param)));
         final ImageView view = (ImageView) findViewById(R.id.movie_details_poster);
@@ -55,8 +60,12 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 .placeholder(R.drawable.loading_placeholder)
                 .error(R.drawable.image_not_available)
                 .into(view);
+    }
 
-        // https://github.com/dmytrodanylyk/circular-progress-button
+    /**
+     * See <a href="https://github.com/dmytrodanylyk/circular-progress-button"> for details
+     */
+    private void initOpenReviewButton() {
         final CircularProgressButton circularProgressButton =
                 (CircularProgressButton) findViewById(R.id.movie_review_button);
         circularProgressButton.setIndeterminateProgressMode(true);
@@ -70,7 +79,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 final Intent intent =
                         new Intent(MovieDetailsActivity.this, MovieReviewsActivity.class);
-
                 intent.putExtra(idParam, movieId);
                 startActivity(intent);
             }
