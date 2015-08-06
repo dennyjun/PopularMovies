@@ -70,7 +70,7 @@ public class GetMovieTrailersTask extends GetMovieDataTask<MovieTrailer> {
         Toast.makeText(
                 context,
                 "Failed to load trailers! Please check your internet connection.",
-                Toast.LENGTH_LONG).show();
+                Toast.LENGTH_SHORT).show();
     }
 
     private String buildTrailersUrl(final Context c, final String id) {
