@@ -1,18 +1,14 @@
 package com.example.android.popularmovies.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 
-import com.dd.CircularProgressButton;
-import com.example.android.popularmovies.asynctasks.ToggleReadReviewsButtonTask;
-import com.example.android.popularmovies.data.Movie;
 import com.example.android.popularmovies.R;
+import com.example.android.popularmovies.data.Movie;
 import com.squareup.picasso.Picasso;
 
 
@@ -45,7 +41,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         loadPoster();
-        initOpenReviewButton();
     }
 
     private void loadPoster() {
@@ -60,30 +55,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 .placeholder(R.drawable.loading_placeholder)
                 .error(R.drawable.image_not_available)
                 .into(view);
-    }
-
-    /**
-     * See <a href="https://github.com/dmytrodanylyk/circular-progress-button"> for details
-     */
-    private void initOpenReviewButton() {
-        final CircularProgressButton circularProgressButton =
-                (CircularProgressButton) findViewById(R.id.movie_review_button);
-        circularProgressButton.setIndeterminateProgressMode(true);
-        circularProgressButton.setProgress(1);
-        circularProgressButton.setVisibility(View.VISIBLE);
-
-        final String idParam = getString(R.string.moviedb_id_param);
-        final String movieId = getIntent().getStringExtra(idParam);
-        circularProgressButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final Intent intent =
-                        new Intent(MovieDetailsActivity.this, MovieReviewsActivity.class);
-                intent.putExtra(idParam, movieId);
-                startActivity(intent);
-            }
-        });
-        new ToggleReadReviewsButtonTask(this, circularProgressButton).execute(movieId);
     }
 
     @Override
