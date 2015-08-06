@@ -2,14 +2,13 @@ package com.example.android.popularmovies.asynctasks;
 
 import android.content.Context;
 import android.net.Uri;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.example.android.popularmovies.utils.AppUtil;
-import com.example.android.popularmovies.utils.MovieDbUtil;
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.adapters.recyclerview.MovieReviewAdapter;
 import com.example.android.popularmovies.data.MovieReview;
+import com.example.android.popularmovies.utils.AppUtil;
+import com.example.android.popularmovies.utils.MovieDbUtil;
 
 import org.json.JSONObject;
 
@@ -20,14 +19,11 @@ import java.util.List;
  */
 public class GetMovieReviewsTask extends GetMovieDataTask<MovieReview> {
     private final MovieReviewAdapter movieReviewAdapter;
-    private final ProgressBar progressBar;
 
     public GetMovieReviewsTask(Context context,
-                               MovieReviewAdapter movieMovieReviewAdapter,
-                               ProgressBar progressBar) {
+                               MovieReviewAdapter movieMovieReviewAdapter) {
         super(context);
         this.movieReviewAdapter = movieMovieReviewAdapter;
-        this.progressBar = progressBar;
     }
 
     @Override
@@ -45,7 +41,6 @@ public class GetMovieReviewsTask extends GetMovieDataTask<MovieReview> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        //progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override

@@ -122,7 +122,7 @@ public class MovieReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         loading = true;
         movieReviews.add(null);
         notifyItemInserted(movieReviews.size() - 1);
-        new GetMovieReviewsTask(context, MovieReviewAdapter.this, null)
+        new GetMovieReviewsTask(context, MovieReviewAdapter.this)
                 .execute(movieId, String.valueOf(page));
     }
 
