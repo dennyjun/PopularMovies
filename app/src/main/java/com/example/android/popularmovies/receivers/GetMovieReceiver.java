@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.example.android.popularmovies.adapters.MovieListAdapter;
+import com.example.android.popularmovies.adapters.listview.MovieListAdapter;
 import com.example.android.popularmovies.data.Movie;
 import com.example.android.popularmovies.R;
 

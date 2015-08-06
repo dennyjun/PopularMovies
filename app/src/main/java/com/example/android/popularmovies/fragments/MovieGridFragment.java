@@ -16,7 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.android.popularmovies.activities.SettingsActivity;
-import com.example.android.popularmovies.adapters.MovieListAdapter;
+import com.example.android.popularmovies.adapters.listview.MovieListAdapter;
 import com.example.android.popularmovies.utils.AppUtil;
 import com.example.android.popularmovies.receivers.OnConnectReceiver;
 import com.example.android.popularmovies.listeners.onitemclick.OpenMovieDetailsListener;

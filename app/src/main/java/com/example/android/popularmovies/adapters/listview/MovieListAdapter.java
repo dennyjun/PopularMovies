@@ -1,4 +1,4 @@
-package com.example.android.popularmovies.adapters;
+package com.example.android.popularmovies.adapters.listview;
 
 import android.content.Context;
 import android.content.Intent;
