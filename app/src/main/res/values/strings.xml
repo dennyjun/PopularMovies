@@ -1,0 +1,78 @@
+<resources>
+    <string name="app_name">PopularMovies</string>
+    <string name="title_main">Popular Movies</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="moviedb_api_key_meta_data">org.themoviedb.api.key</string>
+    <string name="moviedb_api_key_param">api_key</string>
+
+    <string name="moviedb_page_param">page</string>
+    <string name="moviedb_scheme_secure">https</string>
+    <string name="moviedb_authority">api.themoviedb.org</string>
+    <string name="moviedb_three_path">3</string>
+    <string name="moviedb_discover_path">discover</string>
+    <string name="moviedb_movie_path">movie</string>
+    <string name="moviedb_video_path">videos</string>
+    <string name="moviedb_sort_by_param">sort_by</string>
+
+    <string name="moviedb_language_param">language</string>
+    <string name="moviedb_language_english">en</string>
+
+    <string name="moviedb_gte_affix">.gte</string>
+    <string name="moviedb_lte_affix">.lte</string>
+
+    <string name="moviedb_asc_affix">.asc</string>
+    <string name="moviedb_desc_affix">.desc</string>
+
+    <string name="moviedb_adult_param">adult</string>
+    <string name="moviedb_backdrop_path_param">backdrop_path</string>
+    <string name="moviedb_genre_ids_param">genre_ids</string>
+    <string name="moviedb_id_param">id</string>
+    <string name="moviedb_original_language_param">original_language</string>
+    <string name="moviedb_original_title_param">original_title</string>
+    <string name="moviedb_overview_param">overview</string>
+    <string name="moviedb_release_date_param">release_date</string>
+    <string name="moviedb_poster_path_param">poster_path</string>
+    <string name="moviedb_popularity_param">popularity</string>
+    <string name="moviedb_title_param">title</string>
+    <string name="moviedb_video_param">video</string>
+    <string name="moviedb_vote_avg_param">vote_average</string>
+    <string name="moviedb_vote_count_param">vote_count</string>
+    <string name="moviedb_vote_count_min">100</string>
+
+    <string name="moviedb_poster_path_base_url">http://image.tmdb.org/t/p/</string>
+    <string name="moviedb_poster_path_size_w185">w185</string>
+    <string name="title_activity_movie_details">Details</string>
+
+    <string name="pref_sort_by_title">Sort Movies By</string>
+    <string name="pref_sort_by_key">sort_by_key</string>
+    <string name="pref_sort_by_most_popular_label">Popularity</string>
+    <string name="pref_sort_by_highest_rated_label">Highest Rated</string>
+
+    <string name="action_get_movie">com.example.android.popularmoviesstage1.GetMovieReceiver</string>
+    <string name="moviedb_data_results_json_array_param">results</string>
+    <string name="moviedb_data_total_pages_param">total_pages</string>
+
+    <string name="movie_grid_view_state_key">gridViewStateKey</string>
+    <string name="movie_grid_view_adapter_state_key">gridViewAdapterStateKey</string>
+
+    <string name="movie_details_scroll_state_key">movieDetailsScrollStateKey</string>
+
+    <string name="date_format_yyyy_mm_dd">yyyy-MM-dd</string>
+    <string name="date_format_mm_dd_yyyy_use_slash">MM/dd/yyyy</string>
+
+    <string name="youtube_scheme">https</string>
+    <string name="youtube_base_url">www.youtube.com</string>
+    <string name="youtube_watch_path">watch</string>
+    <string name="youtube_video_key_param">v</string>
+
+    <string name="moviedb_trailer_id_param">id</string>
+    <string name="moviedb_trailer_site_param">site</string>
+    <string name="moviedb_trailer_key_param">key</string>
+    <string name="moviedb_trailer_name_param">name</string>
+    <string name="moviedb_trailer_type_param">type</string>
+    <string name="moviedb_trailer_type_trailer">Trailer</string>
+    <string name="moviedb_trailer_na">No Trailers Found</string>
+
+    <string name="moviedb_trailer_button_label_prefix">View Trailer #</string>
+</resources>

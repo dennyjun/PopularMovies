@@ -1,0 +1,27 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    tools:context=".MovieGridFragment"
+    android:orientation="vertical"
+    android:background="@android:color/black">
+    <GridView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/movies_grid_view"
+        android:numColumns="auto_fit"
+        android:gravity="center"
+        android:columnWidth="160dp"
+        android:stretchMode="columnWidth"
+        android:stackFromBottom="false"
+        android:layout_weight="1" />
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/loading_more_spinner"
+        android:layout_gravity="center_horizontal"
+        android:visibility="gone"
+        android:indeterminate="true" />
+</LinearLayout>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="C:\Users\Denny\.gradle\caches\modules-2\files-2.1\com.squareup.picasso\picasso\2.5.2\7446d06ec8d4f7ffcc53f1da37c95f200dcb9387\picasso-2.5.2.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="7446d06ec8d4f7ffcc53f1da37c95f200dcb9387">
+        <dex dex="S:\Android\AndroidStudioProjects\PopularMovies\app\build\intermediates\pre-dexed\debug\picasso-2.5.2-679fb58455dbc1cee3ad06cba3cfda1a785130e1.jar" />
+    </item>
+    <item
+        jar="S:\Android\AndroidStudioProjects\PopularMovies\app\build\intermediates\exploded-aar\com.android.support\cardview-v7\22.2.1\jars\classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="e1fa5e1123997a55e3ed65b44892993ff4b58cfe">
+        <dex dex="S:\Android\AndroidStudioProjects\PopularMovies\app\build\intermediates\pre-dexed\debug\classes-c99fe5da7b71f3cdaff2aa51958770b165c9b1a3.jar" />
+    </item>
+    <item
+        jar="S:\Android\AndroidStudioProjects\PopularMovies\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.1\jars\classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="f8efd0096475e0daf054267b61544e10dc776503">
+        <dex dex="S:\Android\AndroidStudioProjects\PopularMovies\app\build\intermediates\pre-dexed\debug\classes-88353b68cca620c178c050e5fbecc1ed85bb1beb.jar" />
+    </item>
+    <item
+        jar="C:\Users\Denny\.gradle\caches\modules-2\files-2.1\com.squareup.okhttp\okhttp\2.4.0\40340c0748190fe897baf7bffbc1b282734294e5\okhttp-2.4.0.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="40340c0748190fe897baf7bffbc1b282734294e5">
+        <dex dex="S:\Android\AndroidStudioProjects\PopularMovies\app\build\intermediates\pre-dexed\debug\okhttp-2.4.0-bb1080e0ee548643033f343983d7ced8c085adfd.jar" />
+    </item>
+    <item
+        jar="C:\Users\Denny\.gradle\caches\modules-2\files-2.1\com.squareup.okio\okio\1.4.0\5b72bf48563ea8410e650de14aa33ff69a3e8c35\okio-1.4.0.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="5b72bf48563ea8410e650de14aa33ff69a3e8c35">
+        <dex dex="S:\Android\AndroidStudioProjects\PopularMovies\app\build\intermediates\pre-dexed\debug\okio-1.4.0-2e052e4ac0c8bbef9d7b0cf5b028d6f768aba41c.jar" />
+    </item>
+    <item
+        jar="S:\Android\android-sdk\extras\android\m2repository\com\android\support\support-annotations\22.2.1\support-annotations-22.2.1.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="61a0ff5c29295ec56d7e0bd3d25d95dbf71b4b2b">
+        <dex dex="S:\Android\AndroidStudioProjects\PopularMovies\app\build\intermediates\pre-dexed\debug\support-annotations-22.2.1-fc5c7ba97bb80faa72f86b34bc37321644789da3.jar" />
+    </item>
+    <item
+        jar="S:\Android\AndroidStudioProjects\PopularMovies\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\22.2.1\jars\classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="4486e953d1f35f8ccab098b1dd67146366d5f731">
+        <dex dex="S:\Android\AndroidStudioProjects\PopularMovies\app\build\intermediates\pre-dexed\debug\classes-41205e3e4384e604fe471c969e9b97bd1e7dcb8f.jar" />
+    </item>
+    <item
+        jar="S:\Android\AndroidStudioProjects\PopularMovies\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.1\jars\libs\internal_impl-22.2.1.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="c471eaaba13ff64f6e0383d1c30a9cdc9a97efeb">
+        <dex dex="S:\Android\AndroidStudioProjects\PopularMovies\app\build\intermediates\pre-dexed\debug\internal_impl-22.2.1-3b3212761d2ca808f8470af8095635a11a2d3b9f.jar" />
+    </item>
+    <item
+        jar="S:\Android\AndroidStudioProjects\PopularMovies\app\build\intermediates\exploded-aar\com.github.dmytrodanylyk.circular-progress-button\library\1.1.3\jars\classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="8a6ed980c74ad35b2dfc4e1daf97bfc0eea5d7c9">
+        <dex dex="S:\Android\AndroidStudioProjects\PopularMovies\app\build\intermediates\pre-dexed\debug\classes-c46a34fa3e35e8f5be095002adff0ede6c6eb327.jar" />
+    </item>
+    <item
+        jar="C:\Users\Denny\.gradle\caches\modules-2\files-2.1\com.squareup.okhttp\okhttp-urlconnection\2.4.0\a0c195f14cefc7597e0bebf22c3e7b43920dcf4\okhttp-urlconnection-2.4.0.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="0a0c195f14cefc7597e0bebf22c3e7b43920dcf4">
+        <dex dex="S:\Android\AndroidStudioProjects\PopularMovies\app\build\intermediates\pre-dexed\debug\okhttp-urlconnection-2.4.0-d7d92a25546804d1a960236dc819982401e91e5b.jar" />
+    </item>
+    <item
+        jar="S:\Android\AndroidStudioProjects\PopularMovies\app\build\intermediates\exploded-aar\com.android.support\recyclerview-v7\22.2.1\jars\classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="3abb4b88f5a8a0584a9b01d3170d7165f12f8588">
+        <dex dex="S:\Android\AndroidStudioProjects\PopularMovies\app\build\intermediates\pre-dexed\debug\classes-2eefc1d290b6c8cb9b11f2423a14077cec0f0485.jar" />
+    </item>
+
+</items>

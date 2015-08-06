@@ -1,0 +1,66 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context="com.example.android.popularmovies.fragments.MovieRatingFragment"
+    android:orientation="vertical"
+    android:background="@android:color/black">
+
+    <RatingBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/movie_rating_bar"
+        android:numStars="5"
+        style="?android:attr/ratingBarStyleSmall" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="00%"
+            android:id="@+id/movie_rating_text_view"
+            android:textColor="@android:color/white" />
+
+        <Space
+            android:layout_width="10px"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="-"
+            android:id="@+id/textView3"
+            android:textColor="@android:color/white" />
+
+        <Space
+            android:layout_width="10px"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="0"
+            android:id="@+id/movie_rating_vote_count"
+            android:textColor="@android:color/white" />
+
+        <Space
+            android:layout_width="5px"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="votes"
+            android:id="@+id/textView4"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+
+</LinearLayout>

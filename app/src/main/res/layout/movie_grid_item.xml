@@ -1,0 +1,8 @@
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/listview_item_movie_listing"
+    android:layout_gravity="center"
+    android:adjustViewBounds="false"
+    android:minHeight="260dp"
+    android:minWidth="240dp" />

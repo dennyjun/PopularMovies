@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.android.popularmovies" >
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/Theme.AppCompat" >
+        <activity
+            android:name="com.example.android.popularmovies.activities.MainActivity"
+            android:label="@string/title_main"
+            android:launchMode="singleTop">
+            <!-- Standard launch mode: The system always creates a new instance of the activity in the target task and routes the intent to it.
+                 Need to change to singleTop so that Up navigation doesn't keep recreating the parent -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.example.android.popularmovies.activities.MovieDetailsActivity"
+            android:label="@string/title_activity_movie_details"
+            android:launchMode="singleTop"
+            android:parentActivityName="com.example.android.popularmovies.activities.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.android.popularmovies.activities.MainActivity" />
+        </activity>
+
+        <activity
+            android:name="com.example.android.popularmovies.activities.MovieReviewsActivity"
+            android:label="Reviews"
+            android:parentActivityName="com.example.android.popularmovies.activities.MovieDetailsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.android.popularmovies.activities.MovieDetailsActivity" />
+        </activity>
+
+        <activity
+            android:name="com.example.android.popularmovies.activities.SettingsActivity"
+            android:label="@string/action_settings">
+        </activity>
+
+        <service
+            android:name="com.example.android.popularmovies.services.GetMovieService"
+            android:exported="false" />
+
+        <meta-data
+            android:name="org.themoviedb.api.key"
+            android:value="" />
+
+    </application>
+
+</manifest>
