@@ -2,6 +2,7 @@ package com.example.android.popularmovies.asynctasks;
 
 import android.content.Context;
 import android.net.Uri;
+import android.view.View;
 import android.widget.Toast;
 
 import com.dd.CircularProgressButton;
@@ -41,6 +42,7 @@ public class ToggleReadReviewsButtonTask extends GetMovieDataTask<MovieReview> {
         super.onPostExecute(movieReviews);
 
         if(!AppUtil.isConnectedToInternet(context)) {
+            circularProgressButton.setVisibility(View.INVISIBLE);
             showNoInternetMsg();
             return;
         }
