@@ -1,4 +1,4 @@
-# PopularMoviesStage2
+# PopularMovies
 
 The application will not work until an API key is included in the manifest file. Fill in the android:value field in the AndroidManifest.xml file.
 
