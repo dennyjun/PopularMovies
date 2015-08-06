@@ -1,6 +1,8 @@
 package com.example.android.popularmovies.adapters.recyclerview;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -114,8 +116,22 @@ public class MovieTrailerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 .placeholder(R.drawable.loading_placeholder)
                 .error(R.drawable.image_not_available)
                 .into(movieTrailerViewHolder.previewImageView);
+        setupImageViewToOpenYoutube(movieTrailerViewHolder.previewImageView, movieTrailer);
+
         movieTrailerViewHolder.labelTextView.setText(
                 context.getString(R.string.moviedb_trailer_thumbnail_prefix) + (position + 1));
+    }
+
+    private void setupImageViewToOpenYoutube(final ImageView imageView,
+                                             final MovieTrailer movieTrailer) {
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Intent intent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse(movieTrailer.getUrl()));
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
