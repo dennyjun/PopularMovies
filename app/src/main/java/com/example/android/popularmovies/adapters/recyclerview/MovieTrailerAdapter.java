@@ -59,7 +59,8 @@ public class MovieTrailerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 .placeholder(R.drawable.loading_placeholder)
                 .error(R.drawable.image_not_available)
                 .into(movieTrailerViewHolder.previewImageView);
-        movieTrailerViewHolder.labelTextView.setText(context.getString(R.string.moviedb_trailer_button_label_prefix) + (position + 1));
+        movieTrailerViewHolder.labelTextView.setText(
+                context.getString(R.string.moviedb_trailer_thumbnail_prefix) + (position + 1));
     }
 
     @Override
