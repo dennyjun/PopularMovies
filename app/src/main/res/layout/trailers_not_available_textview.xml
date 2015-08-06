@@ -5,10 +5,10 @@
     style="@style/CardView.Dark">
 
     <TextView
-        android:id="@+id/movie_reviews_not_available_textview"
+        android:id="@+id/movie_trailers_not_available_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/movie_reviews_na" />
+        android:text="@string/movie_trailer_na"/>
 
 </android.support.v7.widget.CardView>

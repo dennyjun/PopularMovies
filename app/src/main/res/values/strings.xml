@@ -74,7 +74,6 @@
     <string name="moviedb_trailer_name_param">name</string>
     <string name="moviedb_trailer_type_param">type</string>
     <string name="moviedb_trailer_type_trailer">Trailer</string>
-    <string name="moviedb_trailer_na">No Trailers Found</string>
 
     <string name="moviedb_trailer_thumbnail_prefix">Trailer #</string>
     <string name="movie_trailer_recycler_view_state_key">trailersRecyclerViewKey</string>
@@ -87,5 +86,7 @@
     <string name="movie_review_recycler_view_state_key">reviewsRecyclerViewKey</string>
     <string name="movie_review_adapter_state_key">movieReviewAdapterKey</string>
 
+    <string name="movie_trailer_na">Trailers Not Available</string>
+    <string name="movie_reviews_na">Reviews Not Available</string>
 
 </resources>
