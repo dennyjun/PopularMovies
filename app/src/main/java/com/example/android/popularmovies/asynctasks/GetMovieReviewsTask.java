@@ -47,6 +47,10 @@ public class GetMovieReviewsTask extends GetMovieDataTask<MovieReview> {
     protected void onPostExecute(List<MovieReview> movieReviews) {
         super.onPostExecute(movieReviews);
         movieReviewAdapter.removeLast();
+        if(!AppUtil.isConnectedToInternet(context)) {
+            showNoInternetMsg();
+            return;
+        }
         movieReviewAdapter.addItems(movieReviews);
         movieReviewAdapter.finalizeDataChange();
         movieReviewAdapter.setNoMoreData(movieReviewAdapter.getPage() > getTotalPages());
