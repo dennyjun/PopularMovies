@@ -3,6 +3,7 @@ package com.example.android.popularmovies.data;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.utils.JsonUtil;
 
 import org.json.JSONException;
@@ -33,9 +34,9 @@ public class MovieReview implements Serializable {
             return;
         }
         try {
-            setId(obj.getString("id"));
-            setAuthor(JsonUtil.getString(obj, "author"));
-            setContent(JsonUtil.getString(obj, "content"));
+            setId(obj.getString(c.getString(R.string.moviedb_review_id_param)));
+            setAuthor(JsonUtil.getString(obj, c.getString(R.string.moviedb_review_author_param)));
+            setContent(JsonUtil.getString(obj, c.getString(R.string.moviedb_review_content_param)));
         } catch (JSONException e) {
             Log.e(LOG_TAG, "Unable to deserialize JSONObject.", e);
         }

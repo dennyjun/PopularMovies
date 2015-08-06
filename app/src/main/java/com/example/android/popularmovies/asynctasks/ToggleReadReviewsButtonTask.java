@@ -7,6 +7,7 @@ import com.dd.CircularProgressButton;
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.data.MovieReview;
 import com.example.android.popularmovies.utils.AppUtil;
+import com.example.android.popularmovies.utils.MovieDbUtil;
 
 import org.json.JSONObject;
 
@@ -46,19 +47,10 @@ public class ToggleReadReviewsButtonTask extends GetMovieDataTask<MovieReview> {
         }
     }
 
-    private Uri.Builder getMovieBaseUri(final Context c) {
-        final Uri.Builder builder = new Uri.Builder();
-        builder.scheme(c.getString(R.string.moviedb_scheme_secure))
-                .authority(c.getString(R.string.moviedb_authority))
-                .appendPath(c.getString(R.string.moviedb_three_path))
-                .appendPath(c.getString(R.string.moviedb_movie_path));
-        return builder;
-    }
-
     private String buildReviewsUrl(final Context c, final String id) {
-        final Uri.Builder baseUrl = getMovieBaseUri(c);
+        final Uri.Builder baseUrl = MovieDbUtil.getMovieBaseUri(c);
         baseUrl.appendPath(id);
-        baseUrl.appendPath("reviews");
+        baseUrl.appendPath(c.getString(R.string.moviedb_review_path));
         baseUrl.appendQueryParameter(c.getString(R.string.moviedb_api_key_param),
                 AppUtil.getMetaData(c, c.getString(R.string.moviedb_api_key_meta_data)));
         return baseUrl.build().toString();

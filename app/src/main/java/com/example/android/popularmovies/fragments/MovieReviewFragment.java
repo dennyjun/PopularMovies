@@ -33,9 +33,9 @@ public class MovieReviewFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("reviewsListViewKey",
+        outState.putParcelable(getString(R.string.movie_review_recycler_view_state_key),
                 reviewsRecyclerView.getLayoutManager().onSaveInstanceState());
-        outState.putSerializable("movieReviewAdapterKey",
+        outState.putSerializable(getString(R.string.movie_review_adapter_state_key),
                 movieReviewAdapter);
     }
 
@@ -46,7 +46,8 @@ public class MovieReviewFragment extends Fragment {
         final View rootView = inflater.inflate(R.layout.fragment_movie_review, container, false);
         reviewsRecyclerView = (RecyclerView) rootView.findViewById(R.id.movie_review_recyclerview);
         reviewsRecyclerView.setHasFixedSize(true);
-        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(rootView.getContext());
+        final LinearLayoutManager linearLayoutManager =
+                new LinearLayoutManager(rootView.getContext());
         reviewsRecyclerView.setLayoutManager(linearLayoutManager);
 
         if(savedInstanceState != null) {
@@ -85,7 +86,9 @@ public class MovieReviewFragment extends Fragment {
     }
 
     private boolean needToCheckForReviews() {
-        return !(movieReviewAdapter.isNoMoreData() && movieReviewAdapter.getItemCount() == 0) && !movieReviewAdapter.isLoading();
+        return !(movieReviewAdapter.isNoMoreData()
+                && movieReviewAdapter.getItemCount() == 0)
+                && !movieReviewAdapter.isLoading();
     }
 
     @Override
@@ -107,10 +110,10 @@ public class MovieReviewFragment extends Fragment {
      */
     private void loadDataFromBundle(final Bundle savedInstanceState) {
         movieReviewAdapter = (MovieReviewAdapter) savedInstanceState
-                .getSerializable("movieReviewAdapterKey");
+                .getSerializable(getString(R.string.movie_review_adapter_state_key));
         reviewsRecyclerView.setAdapter(movieReviewAdapter);
-        reviewsRecyclerView.getLayoutManager().onRestoreInstanceState(
-                savedInstanceState.getParcelable("reviewsListViewKey"));
+        reviewsRecyclerView.getLayoutManager().onRestoreInstanceState(savedInstanceState
+                .getParcelable(getString(R.string.movie_review_recycler_view_state_key)));
     }
 
 

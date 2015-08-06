@@ -70,7 +70,7 @@ public class GetMovieReviewsTask extends GetMovieDataTask<MovieReview> {
     private String buildReviewsUrl(final Context c, final String id, final String page) {
         final Uri.Builder baseUrl = MovieDbUtil.getMovieBaseUri(c);
         baseUrl.appendPath(id);
-        baseUrl.appendPath("reviews");
+        baseUrl.appendPath(c.getString(R.string.moviedb_review_path));
         baseUrl.appendQueryParameter(c.getString(R.string.moviedb_api_key_param),
                 AppUtil.getMetaData(c, c.getString(R.string.moviedb_api_key_meta_data)));
         baseUrl.appendQueryParameter(c.getString(R.string.moviedb_page_param), page);

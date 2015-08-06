@@ -13,6 +13,7 @@
     <string name="moviedb_discover_path">discover</string>
     <string name="moviedb_movie_path">movie</string>
     <string name="moviedb_video_path">videos</string>
+    <string name="moviedb_review_path">reviews</string>
     <string name="moviedb_sort_by_param">sort_by</string>
 
     <string name="moviedb_language_param">language</string>
@@ -52,10 +53,10 @@
     <string name="action_get_movie">com.example.android.popularmoviesstage1.GetMovieReceiver</string>
     <string name="moviedb_data_results_json_array_param">results</string>
     <string name="moviedb_data_total_pages_param">total_pages</string>
+    <string name="moviedb_data_total_results_param">total_results</string>
 
     <string name="movie_grid_view_state_key">gridViewStateKey</string>
     <string name="movie_grid_view_adapter_state_key">gridViewAdapterStateKey</string>
-
     <string name="movie_details_scroll_state_key">movieDetailsScrollStateKey</string>
 
     <string name="date_format_yyyy_mm_dd">yyyy-MM-dd</string>
@@ -75,4 +76,13 @@
     <string name="moviedb_trailer_na">No Trailers Found</string>
 
     <string name="moviedb_trailer_button_label_prefix">View Trailer #</string>
+
+    <string name="moviedb_review_id_param">id</string>
+    <string name="moviedb_review_author_param">author</string>
+    <string name="moviedb_review_content_param">content</string>
+
+    <string name="movie_review_recycler_view_state_key">reviewsRecyclerViewKey</string>
+    <string name="movie_review_adapter_state_key">movieReviewAdapterKey</string>
+
+
 </resources>

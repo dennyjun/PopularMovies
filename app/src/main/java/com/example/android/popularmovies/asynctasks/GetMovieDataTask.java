@@ -38,8 +38,9 @@ public abstract class GetMovieDataTask<T> extends AsyncTask<String, Void, List<T
             if(obj.has(context.getString(R.string.moviedb_data_total_pages_param))) {
                 totalPages = obj.getInt(context.getString(R.string.moviedb_data_total_pages_param));
             }
-            if(obj.has("total_results")) {
-                totalResults = obj.getInt("total_results");
+            if(obj.has(context.getString(R.string.moviedb_data_total_results_param))) {
+                totalResults =
+                        obj.getInt(context.getString(R.string.moviedb_data_total_results_param));
             }
             final JSONArray list = obj.getJSONArray(
                     context.getString(R.string.moviedb_data_results_json_array_param));
