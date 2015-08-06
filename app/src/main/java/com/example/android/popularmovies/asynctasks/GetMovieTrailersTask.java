@@ -49,7 +49,7 @@ public class GetMovieTrailersTask extends GetMovieDataTask<MovieTrailer> {
         super.onPostExecute(movieTrailers);
 
         try {
-            movieTrailerAdapter.removeLast();
+            movieTrailerAdapter.hideProgressBar();
             if (!AppUtil.isConnectedToInternet(context)) {
                 showNoInternetMsg();
                 return;
@@ -61,8 +61,8 @@ public class GetMovieTrailersTask extends GetMovieDataTask<MovieTrailer> {
                 }
                 movieTrailerAdapter.addItem(movieTrailer);
             }
-            movieTrailerAdapter.setNoDataFound(movieTrailerAdapter.getItemCount() == 0);
-            if(movieTrailerAdapter.isNoDataFound()) {
+            movieTrailerAdapter.setNoMoreData(movieTrailerAdapter.getItemCount() == 0);
+            if(movieTrailerAdapter.isNoMoreData()) {
                 movieTrailerAdapter.addItem(null);
             }
         } finally {

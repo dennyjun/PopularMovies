@@ -83,7 +83,7 @@ public class MovieTrailerFragment extends Fragment {
     private boolean needToRetrieveTrailers() {
         return !movieTrailerAdapter.isLoading()
                 && movieTrailerAdapter.getItemCount() == 0
-                && !movieTrailerAdapter.isNoDataFound();
+                && !movieTrailerAdapter.isNoMoreData();
     }
 
     private void retrieveTrailers(final Context context) {

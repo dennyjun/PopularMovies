@@ -46,16 +46,21 @@ public class GetMovieReviewsTask extends GetMovieDataTask<MovieReview> {
     @Override
     protected void onPostExecute(List<MovieReview> movieReviews) {
         super.onPostExecute(movieReviews);
-        movieReviewAdapter.removeLast();
-        if(!AppUtil.isConnectedToInternet(context)) {
-            showNoInternetMsg();
-            return;
-        }
-        movieReviewAdapter.addItems(movieReviews);
-        movieReviewAdapter.finalizeDataChange();
-        movieReviewAdapter.setNoMoreData(movieReviewAdapter.getPage() > getTotalPages());
-        if(movieReviewAdapter.isNoMoreData() && movieReviewAdapter.getItemCount() == 0) {
-            movieReviewAdapter.addItem(null);
+
+        try {
+            movieReviewAdapter.hideProgressBar();
+            if (!AppUtil.isConnectedToInternet(context)) {
+                showNoInternetMsg();
+                return;
+            }
+            movieReviewAdapter.addItems(movieReviews);
+            movieReviewAdapter.incrementPage();
+            movieReviewAdapter.setNoMoreData(movieReviewAdapter.getPage() > getTotalPages());
+            if (movieReviewAdapter.isNoMoreData() && movieReviewAdapter.getItemCount() == 0) {
+                movieReviewAdapter.addItem(null);
+            }
+        } finally {
+            movieReviewAdapter.setLoading(false);
         }
     }
 
