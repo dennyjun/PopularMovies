@@ -77,6 +77,8 @@
     <string name="moviedb_trailer_na">No Trailers Found</string>
 
     <string name="moviedb_trailer_thumbnail_prefix">Trailer #</string>
+    <string name="movie_trailer_recycler_view_state_key">trailersRecyclerViewKey</string>
+    <string name="movie_trailer_adapter_state_key">movieTrailerAdapterKey</string>
 
     <string name="moviedb_review_id_param">id</string>
     <string name="moviedb_review_author_param">author</string>

@@ -34,22 +34,27 @@ public class MovieTrailerFragment extends Fragment {
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(getString(R.string.movie_trailer_recycler_view_state_key),
+                trailersRecyclerView.getLayoutManager().onSaveInstanceState());
+        outState.putSerializable(getString(R.string.movie_trailer_adapter_state_key),
+                movieTrailerAdapter);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_movie_trailer, container, false);
-        trailersRecyclerView =
-                (RecyclerView) rootView.findViewById(R.id.movie_trailer_recyclerview);
-        trailersRecyclerView.setHasFixedSize(true);
-        final LinearLayoutManager linearLayoutManager =
-                new LinearLayoutManager(
-                        rootView.getContext(),
-                        LinearLayoutManager.HORIZONTAL,
-                        false);
-        trailersRecyclerView.setLayoutManager(linearLayoutManager);
+        trailersRecyclerView = createTrailersRecyclerView(rootView);
 
-        movieTrailerAdapter = new MovieTrailerAdapter(rootView.getContext());
-        trailersRecyclerView.setAdapter(movieTrailerAdapter);
-        retrieveTrailers(rootView.getContext());
+        if(savedInstanceState != null) {
+            loadDataFromBundle(savedInstanceState);
+        } else {
+            movieTrailerAdapter = new MovieTrailerAdapter(rootView.getContext());
+            trailersRecyclerView.setAdapter(movieTrailerAdapter);
+            retrieveTrailers(rootView.getContext());
+        }
 
         onConnectReceiver = new OnConnectReceiver() {
             @Override
@@ -57,6 +62,19 @@ public class MovieTrailerFragment extends Fragment {
             }
         };
         return rootView;
+    }
+
+    private RecyclerView createTrailersRecyclerView(final View rootView) {
+        final RecyclerView view =
+                (RecyclerView) rootView.findViewById(R.id.movie_trailer_recyclerview);
+        view.setHasFixedSize(true);
+        final LinearLayoutManager linearLayoutManager =
+                new LinearLayoutManager(
+                        rootView.getContext(),
+                        LinearLayoutManager.HORIZONTAL,
+                        false);
+        view.setLayoutManager(linearLayoutManager);
+        return view;
     }
 
     private void retrieveTrailers(final Context context) {
@@ -76,5 +94,13 @@ public class MovieTrailerFragment extends Fragment {
     public void onStop() {
         super.onStop();
         getActivity().unregisterReceiver(onConnectReceiver);
+    }
+
+    private void loadDataFromBundle(final Bundle savedInstanceState) {
+        movieTrailerAdapter = (MovieTrailerAdapter) savedInstanceState
+                .getSerializable(getString(R.string.movie_trailer_adapter_state_key));
+        trailersRecyclerView.setAdapter(movieTrailerAdapter);
+        trailersRecyclerView.getLayoutManager().onRestoreInstanceState(savedInstanceState
+                .getParcelable(getString(R.string.movie_trailer_recycler_view_state_key)));
     }
 }
