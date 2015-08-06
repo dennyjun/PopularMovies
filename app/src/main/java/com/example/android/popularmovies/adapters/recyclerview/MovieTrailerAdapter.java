@@ -24,6 +24,7 @@ public class MovieTrailerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         implements Serializable {
     private final List<MovieTrailer> movieTrailers = new LinkedList<>();
     private final transient Context context;
+    private boolean loading = false;
 
     public static class MovieTrailerViewHolder extends RecyclerView.ViewHolder {
         private ImageView previewImageView;
@@ -79,6 +80,14 @@ public class MovieTrailerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     public void finalizeDataChange() {
-        //loading = false;
+        loading = false;
+    }
+
+    public void setLoading(boolean loading) {
+        this.loading = loading;
+    }
+
+    public boolean isLoading() {
+        return loading;
     }
 }

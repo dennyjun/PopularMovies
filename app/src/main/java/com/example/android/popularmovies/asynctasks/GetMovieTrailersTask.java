@@ -48,16 +48,20 @@ public class GetMovieTrailersTask extends GetMovieDataTask<MovieTrailer> {
     protected void onPostExecute(List<MovieTrailer> movieTrailers) {
         super.onPostExecute(movieTrailers);
 
-        if(!AppUtil.isConnectedToInternet(context)) {
-            showNoInternetMsg();
-            return;
-        }
-
-        for(final MovieTrailer movieTrailer : movieTrailers) {
-            if(!isVideoATrailer(movieTrailer)) {
-                continue;
+        try {
+            if (!AppUtil.isConnectedToInternet(context)) {
+                showNoInternetMsg();
+                return;
             }
-            movieTrailerAdapter.addItem(movieTrailer);
+
+            for (final MovieTrailer movieTrailer : movieTrailers) {
+                if (!isVideoATrailer(movieTrailer)) {
+                    continue;
+                }
+                movieTrailerAdapter.addItem(movieTrailer);
+            }
+        } finally {
+            movieTrailerAdapter.setLoading(false);
         }
     }
 

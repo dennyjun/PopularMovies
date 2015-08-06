@@ -59,6 +59,9 @@ public class MovieTrailerFragment extends Fragment {
         onConnectReceiver = new OnConnectReceiver() {
             @Override
             public void run() {
+                if(needToRetrieveTrailers()) {
+                    retrieveTrailers(rootView.getContext());
+                }
             }
         };
         return rootView;
@@ -77,7 +80,12 @@ public class MovieTrailerFragment extends Fragment {
         return view;
     }
 
+    private boolean needToRetrieveTrailers() {
+        return !movieTrailerAdapter.isLoading() && movieTrailerAdapter.getItemCount() == 0;
+    }
+
     private void retrieveTrailers(final Context context) {
+        movieTrailerAdapter.setLoading(true);
         final String id = getActivity().getIntent()
                 .getStringExtra(getString(R.string.moviedb_id_param));
         new GetMovieTrailersTask(context, movieTrailerAdapter).execute(id);
