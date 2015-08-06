@@ -6,111 +6,99 @@
     android:orientation="vertical"
     android:padding="15dp"
     android:background="@android:color/black">
-    <ScrollView
-        android:id="@+id/activity_details_scrollview"
+    <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-        <LinearLayout
-            android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="wrap_content"
             android:layout_height="fill_parent"
-            android:orientation="vertical">
+            android:id="@+id/movie_details_poster"
+            android:minHeight="255dp"
+            android:minWidth="185dp" />
+
+        <Space
+            android:layout_width="10dp"
+            android:layout_height="fill_parent" />
+
+        <ScrollView
+            android:id="@+id/activity_details_scrollview"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
             <LinearLayout
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/movie_details_poster"
-                        android:minHeight="255dp"
-                        android:minWidth="185dp" />
-
-                    <Space
-                        android:layout_width="100dp"
-                        android:layout_height="5dp" />
-
-                    <fragment
-                        android:id="@+id/movie_trailer_fragment"
-                        android:name="com.example.android.popularmovies.fragments.MovieTrailerFragment"
-                        tools:layout="@layout/fragment_movie_trailer"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-
-                <Space
-                    android:layout_width="20dp"
-                    android:layout_height="10dp" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_weight="0.5">
-                    <fragment
-                        android:id="@+id/movie_title_fragment"
-                        android:name="com.example.android.popularmovies.fragments.MovieTitleFragment"
-                        tools:layout="@layout/fragment_movie_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                    <Space
-                        android:layout_width="100dp"
-                        android:layout_height="10dp" />
-
+                android:layout_height="fill_parent"
+                android:orientation="vertical">
                     <LinearLayout
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="vertical"
+                        android:layout_weight="0.5">
                         <fragment
-                            android:id="@+id/movie_rating_fragment"
-                            android:name="com.example.android.popularmovies.fragments.MovieRatingFragment"
-                            tools:layout="@layout/fragment_movie_rating"
-                            android:layout_gravity="center_vertical"
-                            android:layout_width="wrap_content"
+                            android:id="@+id/movie_title_fragment"
+                            android:name="com.example.android.popularmovies.fragments.MovieTitleFragment"
+                            tools:layout="@layout/fragment_movie_title"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
 
                         <Space
-                            android:layout_width="10dp"
+                            android:layout_width="100dp"
+                            android:layout_height="10dp" />
+
+                        <LinearLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+                            <fragment
+                                android:id="@+id/movie_rating_fragment"
+                                android:name="com.example.android.popularmovies.fragments.MovieRatingFragment"
+                                tools:layout="@layout/fragment_movie_rating"
+                                android:layout_gravity="center_vertical"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+
+                            <Space
+                                android:layout_width="10dp"
+                                android:layout_height="match_parent" />
+
+                            <com.dd.CircularProgressButton
+                                android:id="@+id/movie_review_button"
+                                android:layout_width="80dp"
+                                android:layout_height="40dp"
+                                android:textColor="@color/cpb_white"
+                                android:padding="0dp"
+                                android:textSize="10sp"
+                                app:cpb_selectorIdle="@android:color/black"
+                                app:cpb_colorProgress="@android:color/black"
+                                app:cpb_colorIndicatorBackground="@android:color/black"
+                                app:cpb_cornerRadius="10dp"
+                                app:cpb_textError="No Reviews"
+                                app:cpb_textComplete="Read Reviews"/>
+                        </LinearLayout>
+
+                        <Space
+                            android:layout_width="100dp"
+                            android:layout_height="20dp" />
+
+                        <fragment
+                            android:id="@+id/movie_trailer_fragment"
+                            android:name="com.example.android.popularmovies.fragments.MovieTrailerFragment"
+                            tools:layout="@layout/fragment_movie_trailer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                        <fragment
+                            android:id="@+id/movie_overview_fragment"
+                            android:name="com.example.android.popularmovies.fragments.MovieOverviewFragment"
+                            tools:layout="@layout/fragment_movie_overview"
+                            android:layout_width="match_parent"
                             android:layout_height="match_parent" />
 
-                        <com.dd.CircularProgressButton
-                            android:id="@+id/movie_review_button"
-                            android:layout_width="80dp"
-                            android:layout_height="40dp"
-                            android:textColor="@color/cpb_white"
-                            android:padding="0dp"
-                            android:textSize="10sp"
-                            app:cpb_selectorIdle="@android:color/black"
-                            app:cpb_colorProgress="@android:color/black"
-                            app:cpb_colorIndicatorBackground="@android:color/black"
-                            app:cpb_cornerRadius="10dp"
-                            app:cpb_textError="No Reviews"
-                            app:cpb_textComplete="Read Reviews"/>
+                        <Space
+                            android:layout_width="100dp"
+                            android:layout_height="5dp" />
                     </LinearLayout>
-
-                    <Space
-                        android:layout_width="100dp"
-                        android:layout_height="10dp" />
-
-                    <fragment
-                        android:id="@+id/movie_overview_fragment"
-                        android:name="com.example.android.popularmovies.fragments.MovieOverviewFragment"
-                        tools:layout="@layout/fragment_movie_overview"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-
-                    <Space
-                        android:layout_width="100dp"
-                        android:layout_height="5dp" />
-                </LinearLayout>
-
             </LinearLayout>
-
-        </LinearLayout>
-    </ScrollView>
+        </ScrollView>
+    </LinearLayout>
 </LinearLayout>

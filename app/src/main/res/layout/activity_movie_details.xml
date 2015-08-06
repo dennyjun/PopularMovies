@@ -82,23 +82,19 @@
 
             <Space
                 android:layout_width="100dp"
-                android:layout_height="10dp" />
-
-            <fragment
-                android:id="@+id/movie_overview_fragment"
-                android:name="com.example.android.popularmovies.fragments.MovieOverviewFragment"
-                tools:layout="@layout/fragment_movie_overview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <Space
-                android:layout_width="100dp"
-                android:layout_height="5dp" />
+                android:layout_height="20dp" />
 
             <fragment
                 android:id="@+id/movie_trailer_fragment"
                 android:name="com.example.android.popularmovies.fragments.MovieTrailerFragment"
                 tools:layout="@layout/fragment_movie_trailer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <fragment
+                android:id="@+id/movie_overview_fragment"
+                android:name="com.example.android.popularmovies.fragments.MovieOverviewFragment"
+                tools:layout="@layout/fragment_movie_overview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
