@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.android.popularmovies.R;
-import com.example.android.popularmovies.adapters.MovieReviewAdapter;
+import com.example.android.popularmovies.adapters.recyclerview.MovieReviewAdapter;
 import com.example.android.popularmovies.receivers.OnConnectReceiver;
 import com.example.android.popularmovies.utils.AppUtil;
 

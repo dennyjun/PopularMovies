@@ -1,4 +1,4 @@
-package com.example.android.popularmovies.adapters;
+package com.example.android.popularmovies.adapters.recyclerview;
 
 import android.content.Context;
 import android.support.v7.widget.CardView;

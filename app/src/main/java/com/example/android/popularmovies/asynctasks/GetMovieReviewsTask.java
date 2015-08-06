@@ -8,7 +8,7 @@ import android.widget.Toast;
 import com.example.android.popularmovies.utils.AppUtil;
 import com.example.android.popularmovies.utils.MovieDbUtil;
 import com.example.android.popularmovies.R;
-import com.example.android.popularmovies.adapters.MovieReviewAdapter;
+import com.example.android.popularmovies.adapters.recyclerview.MovieReviewAdapter;
 import com.example.android.popularmovies.data.MovieReview;
 
 import org.json.JSONObject;
