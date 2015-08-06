@@ -2,6 +2,7 @@ package com.example.android.popularmovies.asynctasks;
 
 import android.content.Context;
 import android.net.Uri;
+import android.widget.Toast;
 
 import com.dd.CircularProgressButton;
 import com.example.android.popularmovies.R;
@@ -38,6 +39,11 @@ public class ToggleReadReviewsButtonTask extends GetMovieDataTask<MovieReview> {
     @Override
     protected void onPostExecute(List<MovieReview> movieReviews) {
         super.onPostExecute(movieReviews);
+
+        if(!AppUtil.isConnectedToInternet(context)) {
+            showNoInternetMsg();
+            return;
+        }
         if(getTotalResults() == 0) {
             circularProgressButton.setOnClickListener(null);
             circularProgressButton.setClickable(false);
@@ -45,6 +51,13 @@ public class ToggleReadReviewsButtonTask extends GetMovieDataTask<MovieReview> {
         } else {
             circularProgressButton.setProgress(100); // displays success text
         }
+    }
+
+    private void showNoInternetMsg() {
+        Toast.makeText(
+                context,
+                "Failed to check for reviews! Please check your internet connection.",
+                Toast.LENGTH_SHORT).show();
     }
 
     private String buildReviewsUrl(final Context c, final String id) {
