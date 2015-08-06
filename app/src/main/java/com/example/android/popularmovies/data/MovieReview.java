@@ -21,10 +21,6 @@ public class MovieReview implements Serializable {
     private String author;
     private String content;
 
-    public MovieReview() {
-
-    }
-
     public MovieReview(Context c, JSONObject obj) {
         deserialize(c, obj);
     }
