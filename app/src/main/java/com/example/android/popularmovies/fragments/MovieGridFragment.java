@@ -2,26 +2,27 @@ package com.example.android.popularmovies.fragments;
 
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.example.android.popularmovies.activities.SettingsActivity;
-import com.example.android.popularmovies.adapters.listview.MovieListAdapter;
-import com.example.android.popularmovies.utils.AppUtil;
-import com.example.android.popularmovies.receivers.OnConnectReceiver;
-import com.example.android.popularmovies.listeners.onitemclick.OpenMovieDetailsListener;
 import com.example.android.popularmovies.R;
+import com.example.android.popularmovies.activities.SettingsActivity;
+import com.example.android.popularmovies.adapters.recyclerview.BaseRecyclerAdapter;
+import com.example.android.popularmovies.adapters.recyclerview.MoviePosterAdapter;
 import com.example.android.popularmovies.receivers.GetMovieReceiver;
+import com.example.android.popularmovies.receivers.OnConnectReceiver;
+import com.example.android.popularmovies.utils.AppUtil;
 
 
 /**
@@ -30,11 +31,13 @@ import com.example.android.popularmovies.receivers.GetMovieReceiver;
 public class MovieGridFragment extends Fragment {
 
     private GetMovieReceiver getMovieReceiver;
-    private GridView gridView;
-    private MovieListAdapter movieListAdapter;
     private OnConnectReceiver onConnectReceiver;
 
+    private RecyclerView moviesRecyclerView;
+    private MoviePosterAdapter moviePosterAdapter;
+
     public MovieGridFragment() {
+        // Required empty public constructor
     }
 
     @Override
@@ -47,9 +50,9 @@ public class MovieGridFragment extends Fragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(getString(R.string.movie_grid_view_state_key),
-                gridView.onSaveInstanceState());
+                moviesRecyclerView.getLayoutManager().onSaveInstanceState());
         outState.putSerializable(getString(R.string.movie_grid_view_adapter_state_key),
-                movieListAdapter);
+                moviePosterAdapter);
     }
 
     @Override
@@ -72,25 +75,47 @@ public class MovieGridFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_movie_grid, container, false);
+        moviesRecyclerView = (RecyclerView) rootView.findViewById(R.id.movie_poster_recyclerview);
+        moviesRecyclerView.setHasFixedSize(true);
+        final int col =
+                (getActivity().getResources().getConfiguration().orientation ==
+                        Configuration.ORIENTATION_PORTRAIT)
+                        ? 2
+                        : 4;
 
-        gridView = (GridView)rootView.findViewById(R.id.movies_grid_view);
-        gridView.setOnItemClickListener(new OpenMovieDetailsListener());
+        final GridLayoutManager gridLayoutManager =
+                new GridLayoutManager(getActivity(), col);
+        moviePosterAdapter = new MoviePosterAdapter(rootView.getContext());
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+
+            @Override
+            public int getSpanSize(int position) {
+                final int viewType = moviePosterAdapter.getItemViewType(position);
+                if (viewType == BaseRecyclerAdapter.ViewType.NORMAL.ordinal()) {
+                    return 1;
+                } else {
+                    return col;
+                }
+            }
+        });
+        moviesRecyclerView.setLayoutManager(gridLayoutManager);
+
         if(savedInstanceState != null) {
             loadDataFromBundle(savedInstanceState);
         } else {
-            movieListAdapter = new MovieListAdapter(rootView.getContext());
-            gridView.setAdapter(movieListAdapter);
+            moviesRecyclerView.setAdapter(moviePosterAdapter);
         }
-        movieListAdapter.setEndOfListProgressBar(
-                (ProgressBar)rootView.findViewById(R.id.loading_more_spinner));
-        getMovieReceiver = new GetMovieReceiver(movieListAdapter);
+
+        getMovieReceiver = new GetMovieReceiver(moviePosterAdapter);
         onConnectReceiver = new OnConnectReceiver() {
             @Override
             public void run() {
-                if(movieGridNeedsUpdating()) {
+                if(moviePosterAdapter.sortMethodChanged()) {
+                    moviePosterAdapter.resetAdapter();
+                    updateMovieGrid();
+                } else if(movieGridNeedsUpdating()) {
                     updateMovieGrid();
                 }
-                movieListAdapter.notifyDataSetChanged();
             }
         };
         return rootView;
@@ -101,10 +126,10 @@ public class MovieGridFragment extends Fragment {
      * @param savedInstanceState will be null unless the activity is actually destroyed
      */
     private void loadDataFromBundle(final Bundle savedInstanceState) {
-        movieListAdapter = (MovieListAdapter) savedInstanceState.getSerializable(
+        moviePosterAdapter = (MoviePosterAdapter) savedInstanceState.getSerializable(
                 getString(R.string.movie_grid_view_adapter_state_key));
-        gridView.setAdapter(movieListAdapter);
-        gridView.onRestoreInstanceState(
+        moviesRecyclerView.setAdapter(moviePosterAdapter);
+        moviesRecyclerView.getLayoutManager().onRestoreInstanceState(
                 savedInstanceState.getParcelable(
                         getString(R.string.movie_grid_view_state_key)));
     }
@@ -116,7 +141,11 @@ public class MovieGridFragment extends Fragment {
         getActivity().registerReceiver(getMovieReceiver, intentFilter);
         intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         getActivity().registerReceiver(onConnectReceiver, intentFilter);
-        if(movieGridNeedsUpdating()) {
+
+        if(moviePosterAdapter.sortMethodChanged()) {
+            moviePosterAdapter.resetAdapter();
+            updateMovieGrid();
+        } else if(movieGridNeedsUpdating()) {
             updateMovieGrid();
         }
     }
@@ -129,7 +158,9 @@ public class MovieGridFragment extends Fragment {
     }
 
     private boolean movieGridNeedsUpdating() {
-        return movieListAdapter.sortMethodChanged() || movieListAdapter.isInitialLoadState();
+        return !(moviePosterAdapter.isNoMoreData()
+                && moviePosterAdapter.getItemCount() == 0)
+                && !moviePosterAdapter.isLoading();
     }
 
     private void updateMovieGrid() {
@@ -141,7 +172,6 @@ public class MovieGridFragment extends Fragment {
             return;
         }
 
-        movieListAdapter.clearList();
-        movieListAdapter.getNextPage();
+        moviePosterAdapter.getNextPage();
     }
 }

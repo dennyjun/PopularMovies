@@ -130,6 +130,14 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
         notifyItemInserted(recyclerList.size() - 1);
     }
 
+    public void resetAdapter() {
+        recyclerList.clear();
+        loading = false;
+        noMoreData = false;
+        page = 1;
+        notifyDataSetChanged();
+    }
+
     public boolean isLoading() {
         return loading;
     }
@@ -148,6 +156,10 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
 
     public int getPage() {
         return page;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
     }
 
     public void incrementPage() {

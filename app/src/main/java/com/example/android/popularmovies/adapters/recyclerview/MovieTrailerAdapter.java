@@ -10,10 +10,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.data.MovieTrailer;
 import com.example.android.popularmovies.utils.MovieDbUtil;
-import com.squareup.picasso.Picasso;
 
 /**
  * Created by Denny on 8/6/2015.
@@ -55,12 +55,11 @@ public class MovieTrailerAdapter extends BaseRecyclerAdapter<MovieTrailer> {
         }
         final MovieTrailerViewHolder movieTrailerViewHolder = (MovieTrailerViewHolder) holder;
         final MovieTrailer movieTrailer = getItem(position);
-        Picasso.with(getContext())
+        Glide.with(getContext())
                 .load(MovieDbUtil.buildYouTubeThumbnailUrl(getContext(), movieTrailer.getKey()))
-                .fit()
-                .centerCrop()
-                .placeholder(R.drawable.loading_placeholder)
-                .error(R.drawable.image_not_available)
+                .fitCenter()
+                .placeholder(R.drawable.image_placeholder)
+                .error(R.drawable.image_na)
                 .into(movieTrailerViewHolder.previewImageView);
         setupImageViewToOpenYoutube(movieTrailerViewHolder.previewImageView, movieTrailer);
 

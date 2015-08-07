@@ -33,15 +33,10 @@ public class Movie implements Serializable {
     private boolean video;
     private double voteAverage;
     private int voteCount;
+    private String posterUrl;
 
     public Movie(final Context c, final JSONObject obj) {
         deserialize(c, obj);
-    }
-
-    public static final String buildPosterUrl(final Context c, final String posterPath) {
-        return c.getString(R.string.moviedb_poster_path_base_url)
-                + c.getString(R.string.moviedb_poster_path_size_w185)
-                + posterPath;
     }
 
     public void deserialize(final Context c, final JSONObject obj) {
@@ -75,9 +70,16 @@ public class Movie implements Serializable {
             setVideo(obj.getBoolean(c.getString(R.string.moviedb_video_param)));
             setVoteAverage(obj.getDouble(c.getString(R.string.moviedb_vote_avg_param)));
             setVoteCount(obj.getInt(c.getString(R.string.moviedb_vote_count_param)));
+            setPosterUrl(buildPosterUrl(c, getPosterPath()));
         } catch (JSONException e) {
             Log.e(LOG_TAG, "Unable to deserialize JSONObject.", e);
         }
+    }
+
+    private String buildPosterUrl(final Context c, final String posterPath) {
+        return c.getString(R.string.moviedb_poster_path_base_url)
+                + c.getString(R.string.moviedb_poster_path_size_w185)
+                + posterPath;
     }
 
     public boolean isAdult() {
@@ -190,5 +192,13 @@ public class Movie implements Serializable {
 
     public void setVoteCount(int voteCount) {
         this.voteCount = voteCount;
+    }
+
+    public String getPosterUrl() {
+        return posterUrl;
+    }
+
+    public void setPosterUrl(String posterUrl) {
+        this.posterUrl = posterUrl;
     }
 }

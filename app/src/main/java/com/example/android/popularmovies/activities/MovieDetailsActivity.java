@@ -7,9 +7,8 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 
+import com.bumptech.glide.Glide;
 import com.example.android.popularmovies.R;
-import com.example.android.popularmovies.data.Movie;
-import com.squareup.picasso.Picasso;
 
 
 public class MovieDetailsActivity extends AppCompatActivity {
@@ -45,15 +44,14 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     private void loadPoster() {
         final String posterUrl =
-                Movie.buildPosterUrl(this, getIntent().getStringExtra(getString(R.string.moviedb_poster_path_param)));
+                getIntent().getStringExtra(getString(R.string.movie_poster_url_param));
         final ImageView view = (ImageView) findViewById(R.id.movie_details_poster);
 
-        Picasso.with(this)
+        Glide.with(this)
                 .load(posterUrl)
-                .fit()
-                .centerCrop()
-                .placeholder(R.drawable.loading_placeholder)
-                .error(R.drawable.image_not_available)
+                .fitCenter()
+                .placeholder(R.drawable.image_placeholder)
+                .error(R.drawable.image_na)
                 .into(view);
     }
 
