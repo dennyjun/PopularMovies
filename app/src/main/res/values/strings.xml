@@ -40,6 +40,7 @@
     <string name="moviedb_vote_avg_param">vote_average</string>
     <string name="moviedb_vote_count_param">vote_count</string>
     <string name="moviedb_vote_count_min">100</string>
+    <string name="movie_poster_url_param">posterUrl</string>
 
     <string name="moviedb_poster_path_base_url">http://image.tmdb.org/t/p/</string>
     <string name="moviedb_poster_path_size_w185">w185</string>
