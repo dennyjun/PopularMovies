@@ -55,10 +55,10 @@ public class MovieTrailerAdapter extends BaseRecyclerAdapter<MovieTrailer> {
         }
         final MovieTrailerViewHolder movieTrailerViewHolder = (MovieTrailerViewHolder) holder;
         final MovieTrailer movieTrailer = getItem(position);
-        Glide.with(getContext())
+        Glide.with(movieTrailerViewHolder.previewImageView.getContext())
                 .load(MovieDbUtil.buildYouTubeThumbnailUrl(getContext(), movieTrailer.getKey()))
-                .fitCenter()
-                .placeholder(R.drawable.image_placeholder)
+                .centerCrop()
+                .placeholder(R.drawable.image_placeholder_horizontal)
                 .error(R.drawable.image_na)
                 .into(movieTrailerViewHolder.previewImageView);
         setupImageViewToOpenYoutube(movieTrailerViewHolder.previewImageView, movieTrailer);
