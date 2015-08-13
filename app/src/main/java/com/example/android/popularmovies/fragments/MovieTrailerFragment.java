@@ -2,6 +2,7 @@ package com.example.android.popularmovies.fragments;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.adapters.recyclerview.MovieTrailerAdapter;
 import com.example.android.popularmovies.asynctasks.GetMovieTrailersTask;
+import com.example.android.popularmovies.data.Movie;
 import com.example.android.popularmovies.receivers.OnConnectReceiver;
 
 /**
@@ -89,9 +91,9 @@ public class MovieTrailerFragment extends Fragment {
     private void retrieveTrailers(final Context context) {
         movieTrailerAdapter.setLoading(true);
         movieTrailerAdapter.addItem(null);
-        final String id = getActivity().getIntent()
-                .getStringExtra(getString(R.string.moviedb_id_param));
-        new GetMovieTrailersTask(context, movieTrailerAdapter).execute(id);
+        final Movie movie = new Movie(getActivity().getBaseContext(),
+                getActivity().getIntent().getParcelableExtra(Intent.EXTRA_STREAM));
+        new GetMovieTrailersTask(context, movieTrailerAdapter).execute(movie.getId());
     }
 
     @Override

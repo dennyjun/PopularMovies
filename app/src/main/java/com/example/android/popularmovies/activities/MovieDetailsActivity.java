@@ -1,5 +1,6 @@
 package com.example.android.popularmovies.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -9,9 +10,12 @@ import android.widget.ScrollView;
 
 import com.bumptech.glide.Glide;
 import com.example.android.popularmovies.R;
+import com.example.android.popularmovies.data.Movie;
 
 
 public class MovieDetailsActivity extends AppCompatActivity {
+
+    private boolean favoriteMovie = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,12 +47,12 @@ public class MovieDetailsActivity extends AppCompatActivity {
     }
 
     private void loadPoster() {
-        final String posterUrl =
-                getIntent().getStringExtra(getString(R.string.movie_poster_url_param));
+        final Movie movie = new Movie(getApplicationContext(),
+                getIntent().getParcelableExtra(Intent.EXTRA_STREAM));
         final ImageView view = (ImageView) findViewById(R.id.movie_details_poster);
 
         Glide.with(this)
-                .load(posterUrl)
+                .load(movie.getPosterUrl())
                 .fitCenter()
                 .placeholder(R.drawable.image_placeholder)
                 .error(R.drawable.image_na)
@@ -69,5 +73,13 @@ public class MovieDetailsActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(favoriteMovie) {
+
+        }
     }
 }

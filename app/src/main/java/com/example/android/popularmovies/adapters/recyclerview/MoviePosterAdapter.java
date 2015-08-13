@@ -54,24 +54,7 @@ public class MoviePosterAdapter extends BaseRecyclerAdapter<Movie> {
             final Movie movie = getItem(getAdapterPosition());
             final Context context = v.getContext();
             final Intent intent = new Intent(context, MovieDetailsActivity.class);
-            intent.putExtra(context.getString(R.string.moviedb_title_param),
-                    movie.getTitle());
-            intent.putExtra(context.getString(R.string.moviedb_release_date_param),
-                    movie.getReleaseDate());
-            intent.putExtra(context.getString(R.string.moviedb_poster_path_param),
-                    movie.getPosterPath());
-            intent.putExtra(context.getString(R.string.movie_poster_url_param),
-                    movie.getPosterUrl());
-            intent.putExtra(context.getString(R.string.moviedb_backdrop_path_param),
-                    movie.getBackdropPath());
-            intent.putExtra(context.getString(R.string.moviedb_vote_avg_param),
-                    movie.getVoteAverage());
-            intent.putExtra(context.getString(R.string.moviedb_vote_count_param),
-                    movie.getVoteCount());
-            intent.putExtra(context.getString(R.string.moviedb_overview_param),
-                    movie.getOverview());
-            intent.putExtra(context.getString(R.string.moviedb_id_param),
-                    movie.getId());
+            intent.putExtra(Intent.EXTRA_STREAM, movie.createContentValues(context));
             v.getContext().startActivity(intent);
         }
     }

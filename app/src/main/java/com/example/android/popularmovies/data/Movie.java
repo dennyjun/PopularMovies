@@ -1,11 +1,13 @@
 package com.example.android.popularmovies.data;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.os.Parcelable;
 import android.util.Log;
 
-import com.example.android.popularmovies.utils.JsonUtil;
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.utils.AppUtil;
+import com.example.android.popularmovies.utils.JsonUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,6 +39,35 @@ public class Movie implements Serializable {
 
     public Movie(final Context c, final JSONObject obj) {
         deserialize(c, obj);
+    }
+
+    public Movie(final Context context, final Parcelable values) {
+        final ContentValues v = (ContentValues) values;
+        setId(
+                (String) v.get(context.getString(R.string.moviedb_id_param)));
+        setAdult(
+                (Boolean)v.get(context.getString(R.string.moviedb_adult_param)));
+        setOriginalLanguage(
+                (String)v.get(context.getString(R.string.moviedb_original_language_param)));
+        setOriginalTitle(
+                (String)v.get(context.getString(R.string.moviedb_original_title_param)));
+        setOverview(
+                (String)v.get(context.getString(R.string.moviedb_overview_param)));
+        setReleaseDate(
+                (String)v.get(context.getString(R.string.moviedb_release_date_param)));
+        setPosterPath(
+                (String)v.get(context.getString(R.string.moviedb_poster_path_param)));
+        setTitle(
+                (String)v.get(context.getString(R.string.moviedb_title_param)));
+        setVideo(
+                (Boolean)v.get(context.getString(R.string.moviedb_video_param)));
+        setVoteAverage(
+                (Double)v.get(context.getString(R.string.moviedb_vote_avg_param)));
+        setVoteCount(
+                (Integer)v.get(context.getString(R.string.moviedb_vote_count_param)));
+        setPosterUrl(
+                (String)v.get(context.getString(R.string.movie_poster_url_param)));
+
     }
 
     public void deserialize(final Context c, final JSONObject obj) {
@@ -74,6 +105,35 @@ public class Movie implements Serializable {
         } catch (JSONException e) {
             Log.e(LOG_TAG, "Unable to deserialize JSONObject.", e);
         }
+    }
+
+    public ContentValues createContentValues(final Context context) {
+        final ContentValues values = new ContentValues();
+        values.put(context.getString(R.string.moviedb_id_param),
+                getId());
+        values.put(context.getString(R.string.moviedb_adult_param),
+                isAdult());
+        values.put(context.getString(R.string.moviedb_original_language_param),
+                getOriginalLanguage());
+        values.put(context.getString(R.string.moviedb_original_title_param),
+                getOriginalTitle());
+        values.put(context.getString(R.string.moviedb_overview_param),
+                getOverview());
+        values.put(context.getString(R.string.moviedb_release_date_param),
+                getReleaseDate());
+        values.put(context.getString(R.string.moviedb_poster_path_param),
+                getPosterPath());
+        values.put(context.getString(R.string.moviedb_title_param),
+                getTitle());
+        values.put(context.getString(R.string.moviedb_video_param),
+                isVideo());
+        values.put(context.getString(R.string.moviedb_vote_avg_param),
+                getVoteAverage());
+        values.put(context.getString(R.string.moviedb_vote_count_param),
+                getVoteCount());
+        values.put(context.getString(R.string.movie_poster_url_param),
+                getPosterUrl());
+        return values;
     }
 
     private String buildPosterUrl(final Context c, final String posterPath) {

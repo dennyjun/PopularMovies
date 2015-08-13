@@ -13,6 +13,7 @@ import com.dd.CircularProgressButton;
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.activities.MovieReviewsActivity;
 import com.example.android.popularmovies.asynctasks.ToggleReadReviewsButtonTask;
+import com.example.android.popularmovies.data.Movie;
 import com.example.android.popularmovies.receivers.OnConnectReceiver;
 
 /**
@@ -67,18 +68,19 @@ public class MovieReviewButtonFragment extends Fragment {
         circularProgressButton.setVisibility(View.VISIBLE);
 
         final String idParam = getString(R.string.moviedb_id_param);
-        final String movieId = getActivity().getIntent().getStringExtra(idParam);
+        final Movie movie = new Movie(getActivity().getBaseContext(),
+                getActivity().getIntent().getParcelableExtra(Intent.EXTRA_STREAM));
         circularProgressButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final Intent intent =
                         new Intent(getActivity(), MovieReviewsActivity.class);
-                intent.putExtra(idParam, movieId);
+                intent.putExtra(idParam, movie.getId());
                 startActivity(intent);
             }
         });
 
         new ToggleReadReviewsButtonTask(circularProgressButton.getContext(),
-                circularProgressButton).execute(movieId);
+                circularProgressButton).execute(movie.getId());
     }
 }

@@ -6,9 +6,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.android.popularmovies.R;
-import com.example.android.popularmovies.utils.AppUtil;
+import com.example.android.popularmovies.data.Movie;
 
 
 /**
@@ -30,20 +31,22 @@ public class MovieTitleFragment extends Fragment {
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_movie_title, container, false);
         final Intent intent = getActivity().getIntent();
+        final Movie movie = new Movie(rootView.getContext(),
+                intent.getParcelableExtra(Intent.EXTRA_STREAM));
 
-        setupTitleTextView(rootView, intent);
-        setupReleaseDateTextView(rootView, intent);
+        setupTitleTextView(rootView, movie);
+        setupReleaseDateTextView(rootView, movie);
 
         return rootView;
     }
 
-    private void setupTitleTextView(final View rootView, final Intent intent) {
-        AppUtil.setTextFromIntentString(rootView, intent,
-                R.id.title_text_view, R.string.moviedb_title_param);
+    private void setupTitleTextView(final View rootView, final  Movie movie) {
+        final TextView textView = (TextView) rootView.findViewById(R.id.title_text_view);
+        textView.setText(movie.getTitle());
     }
 
-    private void setupReleaseDateTextView(final View rootView, final Intent intent) {
-        AppUtil.setTextFromIntentString(rootView, intent,
-                R.id.year_text_view, R.string.moviedb_release_date_param);
+    private void setupReleaseDateTextView(final View rootView,  Movie movie) {
+        final TextView textView = (TextView) rootView.findViewById(R.id.year_text_view);
+        textView.setText(movie.getReleaseDate());
     }
 }
