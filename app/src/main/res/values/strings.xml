@@ -90,4 +90,7 @@
     <string name="movie_trailer_na">Trailers Not Available</string>
     <string name="movie_reviews_na">Reviews Not Available</string>
 
+    <string name="sql_movie_database_name">moviedb</string>
+    <string name="sql_movie_database_version">1</string>
+
 </resources>
