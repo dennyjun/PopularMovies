@@ -2,4 +2,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.android.popularmovies.activities.MovieDetailsActivity">
+    <item android:id="@+id/action_favorite"
+        android:icon="@mipmap/ic_favorite_border_blue_48dp"
+        android:title="favorite"
+        app:showAsAction="always" />
 </menu>

@@ -51,8 +51,13 @@
             android:name="com.example.android.popularmovies.services.GetMovieService"
             android:exported="false" />
 
+        <provider
+            android:authorities="com.example.android.popularmovies.providers.MovieContentProvider"
+            android:name=".providers.MovieContentProvider" >
+        </provider>
+
         <meta-data
-            android:name="org.themoviedb.api.key"
+            android:name="@string/moviedb_api_key_meta_data"
             android:value="" />
 
     </application>
