@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.net.Uri;
 
+import com.example.android.popularmovies.receivers.GetMovieReceiver;
 import com.example.android.popularmovies.utils.AppUtil;
 import com.example.android.popularmovies.utils.WebUtil;
 import com.example.android.popularmovies.R;
@@ -31,7 +32,7 @@ public class GetMovieService extends IntentService {
         final String page = String.valueOf(
                 intent.getIntExtra(getString(R.string.moviedb_page_param), 1));
         final String movies = getMovies(sortBy, page);
-        final Intent broadcastIntent = new Intent(getString(R.string.action_get_movie));
+        final Intent broadcastIntent = new Intent(GetMovieReceiver.class.getCanonicalName());
         broadcastIntent.putExtra(Intent.EXTRA_TEXT, movies);
         sendBroadcast(broadcastIntent);
     }
