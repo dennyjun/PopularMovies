@@ -51,6 +51,10 @@
             android:name="com.example.android.popularmovies.services.GetMovieService"
             android:exported="false" />
 
+        <service
+            android:name="com.example.android.popularmovies.services.FavoriteService"
+            android:exported="false" />
+
         <provider
             android:authorities="com.example.android.popularmovies.providers.MovieContentProvider"
             android:name=".providers.MovieContentProvider" >
