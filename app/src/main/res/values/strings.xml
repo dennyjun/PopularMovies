@@ -50,8 +50,8 @@
     <string name="pref_sort_by_key">sort_by_key</string>
     <string name="pref_sort_by_most_popular_label">Popularity</string>
     <string name="pref_sort_by_highest_rated_label">Highest Rated</string>
+    <string name="pref_sort_by_favorites">Favorites</string>
 
-    <string name="action_get_movie">com.example.android.popularmoviesstage1.GetMovieReceiver</string>
     <string name="moviedb_data_results_json_array_param">results</string>
     <string name="moviedb_data_total_pages_param">total_pages</string>
     <string name="moviedb_data_total_results_param">total_results</string>
