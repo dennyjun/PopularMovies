@@ -46,7 +46,7 @@ public class Movie implements Serializable {
         setId(
                 (String) v.get(context.getString(R.string.moviedb_id_param)));
         setAdult(
-                (Boolean)v.get(context.getString(R.string.moviedb_adult_param)));
+                Boolean.valueOf(v.get(context.getString(R.string.moviedb_adult_param)).toString()));
         setOriginalLanguage(
                 (String)v.get(context.getString(R.string.moviedb_original_language_param)));
         setOriginalTitle(
@@ -60,11 +60,11 @@ public class Movie implements Serializable {
         setTitle(
                 (String)v.get(context.getString(R.string.moviedb_title_param)));
         setVideo(
-                (Boolean)v.get(context.getString(R.string.moviedb_video_param)));
+                Boolean.valueOf(v.get(context.getString(R.string.moviedb_video_param)).toString()));
         setVoteAverage(
-                (Double)v.get(context.getString(R.string.moviedb_vote_avg_param)));
+                Double.valueOf(v.get(context.getString(R.string.moviedb_vote_avg_param)).toString()));
         setVoteCount(
-                (Integer)v.get(context.getString(R.string.moviedb_vote_count_param)));
+                Integer.valueOf(v.get(context.getString(R.string.moviedb_vote_count_param)).toString()));
         setPosterUrl(
                 (String)v.get(context.getString(R.string.movie_poster_url_param)));
 
@@ -140,6 +140,14 @@ public class Movie implements Serializable {
         return c.getString(R.string.moviedb_poster_path_base_url)
                 + c.getString(R.string.moviedb_poster_path_size_w185)
                 + posterPath;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if(!super.equals(o)) {
+            return getId().equals(((Movie) o).getId());
+        }
+        return true;
     }
 
     public boolean isAdult() {

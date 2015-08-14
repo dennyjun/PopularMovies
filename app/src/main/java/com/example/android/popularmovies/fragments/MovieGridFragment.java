@@ -20,6 +20,8 @@ import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.activities.SettingsActivity;
 import com.example.android.popularmovies.adapters.recyclerview.BaseRecyclerAdapter;
 import com.example.android.popularmovies.adapters.recyclerview.MoviePosterAdapter;
+import com.example.android.popularmovies.asynctasks.GetFavoriteMoviesTask;
+import com.example.android.popularmovies.receivers.FavoriteReceiver;
 import com.example.android.popularmovies.receivers.GetMovieReceiver;
 import com.example.android.popularmovies.receivers.OnConnectReceiver;
 import com.example.android.popularmovies.utils.AppUtil;
@@ -31,6 +33,7 @@ import com.example.android.popularmovies.utils.AppUtil;
 public class MovieGridFragment extends Fragment {
 
     private GetMovieReceiver getMovieReceiver;
+    private FavoriteReceiver favoriteReceiver;
     private OnConnectReceiver onConnectReceiver;
 
     private RecyclerView moviesRecyclerView;
@@ -107,6 +110,7 @@ public class MovieGridFragment extends Fragment {
         }
 
         getMovieReceiver = new GetMovieReceiver(moviePosterAdapter);
+        favoriteReceiver = new FavoriteReceiver(moviePosterAdapter);
         onConnectReceiver = new OnConnectReceiver() {
             @Override
             public void run() {
@@ -137,8 +141,10 @@ public class MovieGridFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        IntentFilter intentFilter = new IntentFilter(getString(R.string.action_get_movie));
+        IntentFilter intentFilter = new IntentFilter(GetMovieReceiver.class.getCanonicalName());
         getActivity().registerReceiver(getMovieReceiver, intentFilter);
+        intentFilter = new IntentFilter(FavoriteReceiver.class.getCanonicalName());
+        getActivity().registerReceiver(favoriteReceiver, intentFilter);
         intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         getActivity().registerReceiver(onConnectReceiver, intentFilter);
 
@@ -154,16 +160,28 @@ public class MovieGridFragment extends Fragment {
     public void onStop() {
         super.onStop();
         getActivity().unregisterReceiver(getMovieReceiver);
+        getActivity().unregisterReceiver(favoriteReceiver);
         getActivity().unregisterReceiver(onConnectReceiver);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
     private boolean movieGridNeedsUpdating() {
-        return !(moviePosterAdapter.isNoMoreData()
-                && moviePosterAdapter.getItemCount() == 0)
-                && !moviePosterAdapter.isLoading();
+        return !moviePosterAdapter.isNoMoreData() && !moviePosterAdapter.isLoading();
     }
 
     private void updateMovieGrid() {
+        if(getString(R.string.pref_sort_by_favorites).equals(
+                moviePosterAdapter.getSortMethodFromPref())) {
+            moviePosterAdapter.setLoading(true);
+            moviePosterAdapter.updateSortMethod();
+            new GetFavoriteMoviesTask(getActivity().getBaseContext(), moviePosterAdapter).execute();
+            return;
+        }
+
         if(!AppUtil.isConnectedToInternet(getActivity())) {
             Toast.makeText(
                     getActivity(),

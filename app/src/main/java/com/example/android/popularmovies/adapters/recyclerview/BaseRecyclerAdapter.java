@@ -114,14 +114,21 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
         notifyDataSetChanged();
     }
 
-    public void removeItem(final T data) {
-        final int position = recyclerList.indexOf(data);
-        removeItem(position);
+    public boolean removeItem(final T data) {
+        for(int i = 0; i < recyclerList.size(); ++i) {
+            if(getItem(i).equals(data)) {
+                return removeItem(i);
+            }
+        }
+        return false;
     }
 
-    public void removeItem(final int position) {
-        recyclerList.remove(position);
-        notifyItemRemoved(position);
+    public boolean removeItem(final int position) {
+        if(recyclerList.remove(position) != null) {
+            notifyItemRemoved(position);
+            return true;
+        }
+        return false;
     }
 
     /**

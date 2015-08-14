@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide;
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.data.Movie;
 import com.example.android.popularmovies.providers.MovieContentProvider;
+import com.example.android.popularmovies.services.FavoriteService;
 
 
 public class MovieDetailsActivity extends AppCompatActivity {
@@ -63,8 +64,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+    public boolean onCreateOptionsMenu(Menu menu) {                                                 // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.movie_details, menu);
         final Movie movie = new Movie(getApplicationContext(),
                 getIntent().getParcelableExtra(Intent.EXTRA_STREAM));
@@ -79,25 +79,22 @@ public class MovieDetailsActivity extends AppCompatActivity {
             final MenuItem menuItem = menu.findItem(R.id.action_favorite);
             menuItem.setIcon(R.mipmap.ic_favorite_48dp);
         }
-        return true;
+        getIntent().putExtra(Intent.EXTRA_TEXT, favoriteMovie);                                     // store original state, need to check when activity
+        return true;                                                                                // is destroyed if need to do work (save / delete fav)
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if(item.getItemId() == R.id.action_favorite) {
-            if(favoriteMovie) {
-                item.setIcon(R.mipmap.ic_favorite_border_blue_48dp);
-                Toast.makeText(this, "Removed from favorites!", Toast.LENGTH_SHORT).show();
-            } else {
-                item.setIcon(R.mipmap.ic_favorite_48dp);
-                Toast.makeText(this, "Added to favorites!", Toast.LENGTH_SHORT).show();
-            }
+    public boolean onOptionsItemSelected(MenuItem item) {                                           // Handle action bar item clicks here. The action bar will
+        int id = item.getItemId();                                                                  // automatically handle clicks on the Home/Up button, so long
+        if(item.getItemId() == R.id.action_favorite) {                                              // as you specify a parent activity in AndroidManifest.xml.
             favoriteMovie = !favoriteMovie;
-
+            if(favoriteMovie) {
+                item.setIcon(R.mipmap.ic_favorite_48dp);
+                Toast.makeText(this, "Added To Favorites", Toast.LENGTH_SHORT).show();
+            } else {
+                item.setIcon(R.mipmap.ic_favorite_border_blue_48dp);
+                Toast.makeText(this, "Removed From Favorites", Toast.LENGTH_SHORT).show();
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -106,17 +103,15 @@ public class MovieDetailsActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         try {
-            final Movie movie = new Movie(getApplicationContext(),
-                    getIntent().getParcelableExtra(Intent.EXTRA_STREAM));
-            if (favoriteMovie) {
-                getContentResolver().insert(MovieContentProvider.CONTENT_URI,
-                        movie.createContentValues(getApplicationContext()));
-            } else {
-                getContentResolver().delete(MovieContentProvider.CONTENT_URI,
-                        getString(R.string.moviedb_id_param) + "=?",
-                        new String[]{movie.getId()}
-                );
+            if(getIntent().getBooleanExtra(Intent.EXTRA_TEXT, favoriteMovie) == favoriteMovie) {    // nothing changed, don't do anything
+                return;
             }
+            final Intent intent = new Intent(getBaseContext(), FavoriteService.class);
+            final String command = favoriteMovie ? "add" : "remove";
+            intent.putExtra("command", command);
+            intent.putExtra(Intent.EXTRA_STREAM,
+                    getIntent().getParcelableExtra(Intent.EXTRA_STREAM));
+            startService(intent);
         } finally {
             super.onDestroy();
         }

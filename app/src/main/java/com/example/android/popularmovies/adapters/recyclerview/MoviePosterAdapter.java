@@ -109,11 +109,11 @@ public class MoviePosterAdapter extends BaseRecyclerAdapter<Movie> {
         }
 
         setLoading(true);
-        sortMethod = getSortMethodFromPref();
+        updateSortMethod();
         runnableHandler.post(getNextPage);
     }
 
-    private String getSortMethodFromPref() {
+    public String getSortMethodFromPref() {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
         return prefs.getString(
                 getContext().getString(R.string.pref_sort_by_key),
@@ -123,5 +123,13 @@ public class MoviePosterAdapter extends BaseRecyclerAdapter<Movie> {
     public boolean sortMethodChanged() {
         final String sortMethod = getSortMethodFromPref();
         return !sortMethod.equals(this.sortMethod);
+    }
+
+    public String getSortMethod() {
+        return sortMethod;
+    }
+
+    public void updateSortMethod() {
+        sortMethod = getSortMethodFromPref();
     }
 }
