@@ -61,6 +61,14 @@
         </provider>
 
         <meta-data
+            android:name="@string/sql_movie_database_name_meta_data"
+            android:value="moviedb" />
+
+        <meta-data
+            android:name="@string/sql_movie_database_version"
+            android:value="2" />
+
+        <meta-data
             android:name="@string/moviedb_api_key_meta_data"
             android:value="" />
 

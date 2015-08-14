@@ -75,6 +75,7 @@
     <string name="moviedb_trailer_name_param">name</string>
     <string name="moviedb_trailer_type_param">type</string>
     <string name="moviedb_trailer_type_trailer">Trailer</string>
+    <string name="moviedb_trailer_url_sql_column_name">url</string>
 
     <string name="moviedb_trailer_thumbnail_prefix">Trailer #</string>
     <string name="movie_trailer_recycler_view_state_key">trailersRecyclerViewKey</string>
@@ -90,7 +91,7 @@
     <string name="movie_trailer_na">Trailers Not Available</string>
     <string name="movie_reviews_na">Reviews Not Available</string>
 
-    <string name="sql_movie_database_name">moviedb</string>
-    <string name="sql_movie_database_version">1</string>
+    <string name="sql_movie_database_name_meta_data">sql.movie.database.name</string>
+    <string name="sql_movie_database_version_meta_data">sql.movie.database.version</string>
 
 </resources>
