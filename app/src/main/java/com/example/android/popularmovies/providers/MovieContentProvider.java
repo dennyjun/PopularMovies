@@ -6,6 +6,7 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
@@ -83,10 +84,11 @@ public class MovieContentProvider extends ContentProvider {
         long id = 0;
         switch (uriType) {
             case URI_CODE_FAVORITES:
-                id = movieDbHelper.getWritableDatabase().insert(
+                id = movieDbHelper.getWritableDatabase().insertWithOnConflict(
                         MovieDbHelper.FAVORITES_TABLE_NAME,
                         null,
-                        values
+                        values,
+                        SQLiteDatabase.CONFLICT_REPLACE
                 );
                 return ContentUris.withAppendedId(uri, id);
             default: throw new IllegalArgumentException("Invalid URI: " + uri);
