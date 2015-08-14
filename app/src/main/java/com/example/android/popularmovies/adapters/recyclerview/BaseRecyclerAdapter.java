@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.example.android.popularmovies.R;
 
 import java.io.Serializable;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,7 +21,7 @@ import java.util.List;
 public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         implements Serializable {
     private final transient Context context;
-    private final List<T> recyclerList = new LinkedList<>();
+    private final List<T> recyclerList = new ArrayList<>(100);
     private boolean loading = false;
     private boolean noMoreData = false;
     private int page = 1;
