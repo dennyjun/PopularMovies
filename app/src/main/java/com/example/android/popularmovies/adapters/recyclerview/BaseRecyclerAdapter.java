@@ -114,6 +114,16 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
         notifyDataSetChanged();
     }
 
+    public void removeItem(final T data) {
+        final int position = recyclerList.indexOf(data);
+        removeItem(position);
+    }
+
+    public void removeItem(final int position) {
+        recyclerList.remove(position);
+        notifyItemRemoved(position);
+    }
+
     /**
      * Must be called before adding items to the list
      */
