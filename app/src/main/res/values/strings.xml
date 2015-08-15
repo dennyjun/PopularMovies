@@ -94,4 +94,7 @@
     <string name="sql_movie_database_name_meta_data">sql.movie.database.name</string>
     <string name="sql_movie_database_version_meta_data">sql.movie.database.version</string>
 
+    <string name="favorite_state_intent_param">favoriteState</string>
+    <string name="original_favorite_state_intent_param">originalFavoriteState</string>
+
 </resources>
