@@ -37,16 +37,18 @@ public class GetFavoriteTrailersTask extends AsyncTask<String, Void, List<MovieT
 
     @Override
     protected List<MovieTrailer> doInBackground(String... params) {
+        final List<MovieTrailer> trailers = new LinkedList<>();
         final String movieId = params[0];
-        final Cursor cursor = context.getContentResolver().query(
+        Cursor cursor = null;
+        try {
+            cursor = context.getContentResolver().query(
                 MovieContentProvider.TRAILERS_CONTENT_URI,
                 null,
                 MovieDbHelper.FAVORITES_TABLE_NAME +
                         context.getString(R.string.moviedb_id_param) + "=?",
                 new String[]{movieId},
                 context.getString(R.string.moviedb_trailer_name_param) + " ASC");
-        final List<MovieTrailer> trailers = new LinkedList<>();
-        try {
+
             while (cursor.moveToNext()) {
                 final ContentValues contentValues = new ContentValues();
                 DatabaseUtils.cursorRowToContentValues(cursor, contentValues);
@@ -54,7 +56,7 @@ public class GetFavoriteTrailersTask extends AsyncTask<String, Void, List<MovieT
                 trailers.add(trailer);
             }
         } finally {
-            cursor.close();
+            if(cursor != null) cursor.close();
         }
         return trailers;
     }
