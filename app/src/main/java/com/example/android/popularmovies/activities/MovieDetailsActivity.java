@@ -47,16 +47,19 @@ public class MovieDetailsActivity extends AppCompatActivity {
     }
 
     private boolean checkIfFavoriteMovieFromDb(final String movieId) {
-        final Cursor cursor = getContentResolver().query(
-                MovieContentProvider.FAVORITES_CONTENT_URI,
-                new String[]{getString(R.string.moviedb_id_param)},
-                getString(R.string.moviedb_id_param) + "=?",
-                new String[]{movieId},
-                null);
+        Cursor cursor = null;
         try {
+            cursor = getContentResolver().query(
+                    MovieContentProvider.FAVORITES_CONTENT_URI,
+                    new String[]{getString(R.string.moviedb_id_param)},
+                    getString(R.string.moviedb_id_param) + "=?",
+                    new String[]{movieId},
+                    null);
             return cursor.getCount() != 0;
         } finally {
-            cursor.close();
+            if(cursor != null) {
+                cursor.close();
+            }
         }
     }
 
