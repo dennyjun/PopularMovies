@@ -1,17 +1,13 @@
 package com.example.android.popularmovies.utils;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
 
-import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -42,37 +38,6 @@ public class AppUtil {
     public static final int getMetaDataInt(final Context c, final int metaDataNameId) {
         final Bundle metaData = getMetaData(c);
         return metaData.getInt(c.getString(metaDataNameId));
-    }
-
-    public static void setTextFromIntentString(final View rootView, final Intent intent,
-                                               final int textViewId, final int intentNameId) {
-        final TextView textView = (TextView) rootView.findViewById(textViewId);
-        final String data = intent.getStringExtra(rootView.getContext().getString(intentNameId));
-        textView.setText(data);
-    }
-
-    public static void setTextFromIntentInt(final View rootView, final Intent intent,
-                                               final int textViewId, final int intentNameId) {
-        final TextView textView = (TextView) rootView.findViewById(textViewId);
-        final int data = intent.getIntExtra(rootView.getContext().getString(intentNameId), 0);
-        textView.setText(String.valueOf(data));
-    }
-
-    public static void setTextFromIntentDouble(final View rootView, final Intent intent,
-                                            final int textViewId, final int intentNameId) {
-        setTextFromIntentDouble(rootView, intent, null, textViewId, intentNameId);
-    }
-
-    public static void setTextFromIntentDouble(final View rootView, final Intent intent,
-                                               final DecimalFormat decimalFormat,
-                                               final int textViewId, final int intentNameId) {
-        final TextView textView = (TextView) rootView.findViewById(textViewId);
-        final double data =
-                intent.getDoubleExtra(rootView.getContext().getString(intentNameId), 0d);
-        final String text = (decimalFormat == null)
-                ? String.valueOf(data)
-                : decimalFormat.format(data);
-        textView.setText(text);
     }
 
     public static final boolean isConnectedToInternet(final Context context) {

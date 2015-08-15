@@ -73,15 +73,23 @@ public class MovieContentProvider extends ContentProvider {
         final int uriType = uriMatcher.match(uri);
         switch (uriType) {
             case URI_CODE_FAVORITES:
-                return ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + FAVORITES_BASE_PATH;
+                return formatDirUriType(FAVORITES_BASE_PATH);
             case URI_CODE_FAVORITE_ID:
-                return ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + FAVORITES_BASE_PATH;
+                return formatItemUriType(FAVORITES_BASE_PATH);
             case URI_CODE_TRAILERS:
-                return ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + TRAILERS_BASE_PATH;
+                return formatDirUriType(TRAILERS_BASE_PATH);
             case URI_CODE_TRAILER_ID:
-                return ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + TRAILERS_BASE_PATH;
+                return formatItemUriType(TRAILERS_BASE_PATH);
             default: throw new IllegalArgumentException("Invalid URI: " + uri);
         }
+    }
+
+    private String formatDirUriType(final String path) {
+        return ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + path;
+    }
+
+    private String formatItemUriType(final String path) {
+        return ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + path;
     }
 
     @Override
