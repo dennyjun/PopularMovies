@@ -10,8 +10,12 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.adapters.recyclerview.MovieTrailerAdapter;
@@ -37,6 +41,44 @@ public class MovieTrailerFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.movie_trailers, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        final int id = item.getItemId();
+        switch (id) {
+            case R.id.action_share:
+                if( movieTrailerAdapter.getItem(0) == null) {
+                    Toast.makeText(getActivity().getBaseContext(),
+                            "Trailer Not Available To Share",
+                            Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+                final Movie movie = getMovieFromIntent(getActivity().getBaseContext());
+                final String subject = movie.getTitle();
+                final String msg =
+                        "Check out this movie trailer for " + movie.getTitle() + "!\n\n" +
+                        movieTrailerAdapter.getItem(0).getUrl();
+                final Intent sharingIntent = getDefaultShareIntent(subject, msg);
+                startActivity(Intent.createChooser(sharingIntent, "Share Trailer #1 Using:"));
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private Intent getDefaultShareIntent(final String subject, final String msg){
+        final Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        intent.putExtra(Intent.EXTRA_TEXT, msg);
+        return intent;
     }
 
     @Override

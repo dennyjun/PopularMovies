@@ -4,6 +4,6 @@
     tools:context="com.example.android.popularmovies.activities.MovieDetailsActivity">
     <item android:id="@+id/action_favorite"
         android:icon="@mipmap/ic_favorite_border_blue_48dp"
-        android:title="favorite"
+        android:title="Favorite"
         app:showAsAction="always" />
 </menu>
