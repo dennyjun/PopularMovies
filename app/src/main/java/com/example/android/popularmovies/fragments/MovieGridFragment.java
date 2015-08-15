@@ -115,6 +115,7 @@ public class MovieGridFragment extends Fragment {
             @Override
             public void run() {
                 if(moviePosterAdapter.sortMethodChanged()) {
+                    updateActivityTitle();
                     moviePosterAdapter.resetAdapter();
                     updateMovieGrid();
                 } else if(movieGridNeedsUpdating()) {
@@ -149,6 +150,7 @@ public class MovieGridFragment extends Fragment {
         getActivity().registerReceiver(onConnectReceiver, intentFilter);
 
         if(moviePosterAdapter.sortMethodChanged()) {
+            updateActivityTitle();
             moviePosterAdapter.resetAdapter();
             updateMovieGrid();
         } else if(movieGridNeedsUpdating()) {
@@ -167,6 +169,24 @@ public class MovieGridFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+
+    private void updateActivityTitle() {
+        final String sortMethod = moviePosterAdapter.getSortMethodFromPref();
+        final String mostPopular = getString(R.string.moviedb_popularity_param);
+        final String highestRating = getString(R.string.moviedb_vote_avg_param);
+        final String favorites = getString(R.string.pref_sort_by_favorites);
+        String title;
+        if(sortMethod.equals(mostPopular)) {
+            title = getString(R.string.activity_label_popular_movies);
+        } else if(sortMethod.equals(highestRating)) {
+            title = getString(R.string.activity_label_highest_rated_movies);
+        } else if(sortMethod.equals(favorites)) {
+            title = getString(R.string.activity_label_favorite_movies);
+        } else {
+            return;
+        }
+        getActivity().setTitle(title);
     }
 
     private boolean movieGridNeedsUpdating() {

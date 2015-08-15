@@ -97,4 +97,7 @@
     <string name="favorite_state_intent_param">favoriteState</string>
     <string name="original_favorite_state_intent_param">originalFavoriteState</string>
 
+    <string name="activity_label_popular_movies">Popular Movies</string>
+    <string name="activity_label_highest_rated_movies">Highest Rated Movies</string>
+    <string name="activity_label_favorite_movies">Favorite Movies</string>
 </resources>
