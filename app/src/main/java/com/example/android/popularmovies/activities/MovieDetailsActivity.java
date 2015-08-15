@@ -19,10 +19,9 @@ import com.example.android.popularmovies.services.FavoriteService;
 
 public class MovieDetailsActivity extends AppCompatActivity {
 
-    private boolean favoriteMovie = false;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        loadFavoriteState();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
 
@@ -33,6 +32,22 @@ public class MovieDetailsActivity extends AppCompatActivity {
                     (ScrollView) findViewById(R.id.activity_details_scrollview);
             scrollView.setScrollY(scrollPosY);
         }
+    }
+
+    private void loadFavoriteState() {
+        final Movie movie = new Movie(getApplicationContext(),                                      // super.onCreate will create the fragments so need to store favorite state before that
+                getIntent().getParcelableExtra(Intent.EXTRA_STREAM));
+        final Cursor cursor = getContentResolver().query(
+                MovieContentProvider.FAVORITES_CONTENT_URI,
+                new String[]{getString(R.string.moviedb_id_param)},
+                getString(R.string.moviedb_id_param) + "=?",
+                new String[]{movie.getId()},
+                null);
+        final boolean favoriteMovie = cursor.getCount() != 0;
+        cursor.close();
+
+        getIntent().putExtra("originalFavoriteState", favoriteMovie);
+        getIntent().putExtra("favoriteState", favoriteMovie);                                       // store original state, need to check when activity is destroyed if need to do work (save / delete fav)
     }
 
     @Override
@@ -66,28 +81,19 @@ public class MovieDetailsActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {                                                 // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.movie_details, menu);
-        final Movie movie = new Movie(getApplicationContext(),
-                getIntent().getParcelableExtra(Intent.EXTRA_STREAM));
-        final Cursor cursor = getContentResolver().query(
-                MovieContentProvider.CONTENT_URI,
-                new String[]{getString(R.string.moviedb_id_param)},
-                getString(R.string.moviedb_id_param) + "=?",
-                new String[]{movie.getId()},
-                null);
-        favoriteMovie = cursor.getCount() != 0;
-        if(favoriteMovie) {
+        if(getIntent().getBooleanExtra("favoriteState", false)) {
             final MenuItem menuItem = menu.findItem(R.id.action_favorite);
             menuItem.setIcon(R.mipmap.ic_favorite_48dp);
         }
-        getIntent().putExtra(Intent.EXTRA_TEXT, favoriteMovie);                                     // store original state, need to check when activity
-        return true;                                                                                // is destroyed if need to do work (save / delete fav)
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {                                           // Handle action bar item clicks here. The action bar will
         int id = item.getItemId();                                                                  // automatically handle clicks on the Home/Up button, so long
         if(item.getItemId() == R.id.action_favorite) {                                              // as you specify a parent activity in AndroidManifest.xml.
-            favoriteMovie = !favoriteMovie;
+            final boolean favoriteMovie = !getIntent().getBooleanExtra("favoriteState", false);
+            getIntent().putExtra("favoriteState", favoriteMovie);                                   // button press means favorite state has changed, update favorite flag
             if(favoriteMovie) {
                 item.setIcon(R.mipmap.ic_favorite_48dp);
                 Toast.makeText(this, "Added To Favorites", Toast.LENGTH_SHORT).show();
@@ -103,12 +109,15 @@ public class MovieDetailsActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         try {
-            if(getIntent().getBooleanExtra(Intent.EXTRA_TEXT, favoriteMovie) == favoriteMovie) {    // nothing changed, don't do anything
+            final boolean favoriteMovie = getIntent().getBooleanExtra("favoriteState", false);
+            if(getIntent().getBooleanExtra("originalFavoriteState", false) == favoriteMovie) {      // nothing changed, don't do anything
                 return;
             }
             final Intent intent = new Intent(getBaseContext(), FavoriteService.class);
-            final String command = favoriteMovie ? "add" : "remove";
-            intent.putExtra("command", command);
+            final String command = favoriteMovie
+                    ? FavoriteService.CMD_ADD_FAV
+                    : FavoriteService.CMD_REM_FAV;
+            intent.putExtra(FavoriteService.INTENT_CMD_PARAM, command);
             intent.putExtra(Intent.EXTRA_STREAM,
                     getIntent().getParcelableExtra(Intent.EXTRA_STREAM));
             startService(intent);

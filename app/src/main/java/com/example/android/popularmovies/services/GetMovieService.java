@@ -61,7 +61,7 @@ public class GetMovieService extends IntentService {
                 sortBy + getString(R.string.moviedb_desc_affix));
         builder.appendQueryParameter(getString(R.string.moviedb_page_param), page);
         builder.appendQueryParameter(getString(R.string.moviedb_api_key_param),
-                AppUtil.getMetaData(this, getString(R.string.moviedb_api_key_meta_data)));
+                AppUtil.getMetaDataString(this, R.string.moviedb_api_key_meta_data));
         return builder.build().toString();
     }
 

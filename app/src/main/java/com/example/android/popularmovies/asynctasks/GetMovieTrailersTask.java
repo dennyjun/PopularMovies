@@ -31,6 +31,7 @@ public class GetMovieTrailersTask extends GetMovieDataTask<MovieTrailer> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
+        movieTrailerAdapter.showProgressBar();
     }
 
     @Override
@@ -87,7 +88,7 @@ public class GetMovieTrailersTask extends GetMovieDataTask<MovieTrailer> {
         baseUrl.appendPath(id);
         baseUrl.appendPath(c.getString(R.string.moviedb_video_path));
         baseUrl.appendQueryParameter(c.getString(R.string.moviedb_api_key_param),
-                AppUtil.getMetaData(c, c.getString(R.string.moviedb_api_key_meta_data)));
+                AppUtil.getMetaDataString(c, R.string.moviedb_api_key_meta_data));
         return baseUrl.build().toString();
     }
 }

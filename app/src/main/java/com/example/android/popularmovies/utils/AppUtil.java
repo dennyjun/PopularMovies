@@ -22,18 +22,26 @@ import java.util.Date;
 public class AppUtil {
     private static final String LOG_TAG = AppUtil.class.getSimpleName();
 
-    public static final String getMetaData(final Context c, final String metaDataName) {
-        String metaDataValue = null;
+    public static final Bundle getMetaData(final Context c) {
         try {
             final ApplicationInfo appInfo =
                     c.getPackageManager()
                             .getApplicationInfo(c.getPackageName(), PackageManager.GET_META_DATA);
-            final Bundle bundle = appInfo.metaData;
-            metaDataValue = bundle.getString(metaDataName);
+            return appInfo.metaData;
         } catch (PackageManager.NameNotFoundException e) {
             Log.e(LOG_TAG, "Failed to get metadata.", e);
         }
-        return metaDataValue;
+        return null;
+    }
+
+    public static final String getMetaDataString(final Context c, final int metaDataNameId) {
+        final Bundle metaData = getMetaData(c);
+        return metaData.getString(c.getString(metaDataNameId));
+    }
+
+    public static final int getMetaDataInt(final Context c, final int metaDataNameId) {
+        final Bundle metaData = getMetaData(c);
+        return metaData.getInt(c.getString(metaDataNameId));
     }
 
     public static void setTextFromIntentString(final View rootView, final Intent intent,

@@ -1,6 +1,7 @@
 package com.example.android.popularmovies.fragments;
 
 import android.app.Fragment;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -14,9 +15,12 @@ import android.view.ViewGroup;
 
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.adapters.recyclerview.MovieTrailerAdapter;
+import com.example.android.popularmovies.asynctasks.GetFavoriteTrailersTask;
 import com.example.android.popularmovies.asynctasks.GetMovieTrailersTask;
 import com.example.android.popularmovies.data.Movie;
+import com.example.android.popularmovies.databases.MovieDbHelper;
 import com.example.android.popularmovies.receivers.OnConnectReceiver;
+import com.example.android.popularmovies.services.FavoriteService;
 
 /**
  *
@@ -90,10 +94,13 @@ public class MovieTrailerFragment extends Fragment {
 
     private void retrieveTrailers(final Context context) {
         movieTrailerAdapter.setLoading(true);
-        movieTrailerAdapter.addItem(null);
         final Movie movie = new Movie(getActivity().getBaseContext(),
                 getActivity().getIntent().getParcelableExtra(Intent.EXTRA_STREAM));
-        new GetMovieTrailersTask(context, movieTrailerAdapter).execute(movie.getId());
+        if(getActivity().getIntent().getBooleanExtra("originalFavoriteState", false)) {
+            new GetFavoriteTrailersTask(context, movieTrailerAdapter).execute(movie.getId());
+        } else {
+            new GetMovieTrailersTask(context, movieTrailerAdapter).execute(movie.getId());
+        }
     }
 
     @Override
@@ -115,5 +122,35 @@ public class MovieTrailerFragment extends Fragment {
         trailersRecyclerView.setAdapter(movieTrailerAdapter);
         trailersRecyclerView.getLayoutManager().onRestoreInstanceState(savedInstanceState
                 .getParcelable(getString(R.string.movie_trailer_recycler_view_state_key)));
+    }
+
+    @Override
+    public void onDestroy() {
+        try {
+            final Intent activityIntent = getActivity().getIntent();
+            final boolean favoriteMovie = activityIntent.getBooleanExtra("favoriteState", false);
+            if(activityIntent.getBooleanExtra("originalFavoriteState", false) == favoriteMovie ||   // nothing changed, don't do anything or
+                    !favoriteMovie) {                                                               // not a favorite movie, favorites table will handle delete if needed
+                return;
+            }
+            final Intent intent = new Intent(getActivity().getBaseContext(), FavoriteService.class);
+            intent.putExtra(FavoriteService.INTENT_CMD_PARAM, FavoriteService.CMD_ADD_TRAILERS);
+            final Movie movie = new Movie(getActivity().getBaseContext(),
+                    getActivity().getIntent().getParcelableExtra(Intent.EXTRA_STREAM));
+            final ContentValues[] values = new ContentValues[movieTrailerAdapter.getItemCount()];
+            for(int i = 0; i < values.length; ++i) {
+                if(movieTrailerAdapter.getItemViewType(i) ==
+                        MovieTrailerAdapter.ViewType.NO_DATA.ordinal()) {
+                    continue;
+                }
+                values[i] = movieTrailerAdapter.getItem(i).createContentValues(getActivity());
+                values[i].put(MovieDbHelper.FAVORITES_TABLE_NAME +
+                        getActivity().getString(R.string.moviedb_id_param), movie.getId());
+            }
+            intent.putExtra(Intent.EXTRA_STREAM, values);
+            getActivity().startService(intent);
+        } finally {
+            super.onDestroy();
+        }
     }
 }

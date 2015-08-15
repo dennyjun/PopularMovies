@@ -4,12 +4,20 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.adapters.recyclerview.MoviePosterAdapter;
 import com.example.android.popularmovies.data.Movie;
 import com.example.android.popularmovies.providers.MovieContentProvider;
+import com.example.android.popularmovies.utils.AppUtil;
+import com.example.android.popularmovies.utils.MovieDbUtil;
+import com.example.android.popularmovies.utils.WebUtil;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -36,19 +44,27 @@ public class GetFavoriteMoviesTask extends AsyncTask<String, Void, List<Movie>> 
 
     @Override
     protected List<Movie> doInBackground(String... params) {
+        final List<Movie> movies = new LinkedList<>();
         final Cursor cursor = context.getContentResolver().query(
-                MovieContentProvider.CONTENT_URI,
+                MovieContentProvider.FAVORITES_CONTENT_URI,
                 null,
                 null,
                 null,
                 context.getString(R.string.moviedb_title_param) + " ASC");
-
-        final List<Movie> movies = new LinkedList<>();
-        while(cursor.moveToNext()) {
-            final ContentValues contentValues = new ContentValues();
-            DatabaseUtils.cursorRowToContentValues(cursor, contentValues);
-            final Movie movie = new Movie(context, contentValues);
-            movies.add(movie);
+        try {
+            while (cursor.moveToNext()) {
+                final ContentValues contentValues = new ContentValues();
+                DatabaseUtils.cursorRowToContentValues(cursor, contentValues);
+                if (AppUtil.isConnectedToInternet(context)) {                                       // Update favorite movie data in the database whenever there's internet
+                    final String movieId =
+                            contentValues.getAsString(context.getString(R.string.moviedb_id_param));
+                    movies.add(update(movieId));
+                } else {
+                    movies.add(new Movie(context, contentValues));
+                }
+            }
+        } finally {
+            cursor.close();
         }
         return movies;
     }
@@ -60,5 +76,36 @@ public class GetFavoriteMoviesTask extends AsyncTask<String, Void, List<Movie>> 
         moviePosterAdapter.addItems(movies);
         moviePosterAdapter.setNoMoreData(true);
         moviePosterAdapter.setLoading(false);
+    }
+
+    private Movie update(final String movieId) {
+        final String request = buildUrl(context, movieId);
+        final String result = WebUtil.get(request);
+        final Movie movie = createFromJson(result);
+
+        context.getContentResolver().update(
+                MovieContentProvider.FAVORITES_CONTENT_URI,
+                movie.createContentValues(context),
+                context.getString(R.string.moviedb_id_param) + "=?",
+                new String[]{movie.getId()});
+        return movie;
+    }
+
+    private String buildUrl(final Context c, final String id) {
+        final Uri.Builder baseUrl = MovieDbUtil.getMovieBaseUri(c);
+        baseUrl.appendPath(id);
+        baseUrl.appendQueryParameter(c.getString(R.string.moviedb_api_key_param),
+                AppUtil.getMetaDataString(c, R.string.moviedb_api_key_meta_data));
+        return baseUrl.build().toString();
+    }
+
+    private Movie createFromJson(final String jsonStr) {
+        try {
+            final JSONObject obj = new JSONObject(jsonStr);
+            return new Movie(context, obj);
+        } catch (JSONException e) {
+            Log.e(LOG_TAG, "Failed to get movie data using JSON.", e);
+        }
+        return null;
     }
 }

@@ -29,9 +29,9 @@ public class MovieDbHelper extends SQLiteOpenHelper {
 
     public MovieDbHelper(Context context) {
         super(context,
-                AppUtil.getMetaData(context, R.string.sql_movie_database_name_meta_data),
+                AppUtil.getMetaDataString(context, R.string.sql_movie_database_name_meta_data),
                 null,
-                Integer.valueOf(AppUtil.getMetaData(context,
+                Integer.valueOf(AppUtil.getMetaDataInt(context,
                         R.string.sql_movie_database_version_meta_data)));
         this.context = context;
     }
@@ -75,13 +75,22 @@ public class MovieDbHelper extends SQLiteOpenHelper {
         db.execSQL(SqlUtil.createTableQuery(TRAILERS_TABLE_NAME,
                 SqlUtil.formatColumn(context.getString(R.string.moviedb_trailer_id_param),
                         DEF_STR, DEF_PRI_KEY, DEF_NOT_NULL),
+                SqlUtil.formatColumn(context.getString(R.string.moviedb_trailer_site_param),
+                        DEF_STR),
+                SqlUtil.formatColumn(context.getString(R.string.moviedb_trailer_key_param),
+                        DEF_STR),
+                SqlUtil.formatColumn(context.getString(R.string.moviedb_trailer_type_param),
+                        DEF_STR),
+                SqlUtil.formatColumn(context.getString(R.string.moviedb_trailer_name_param),
+                        DEF_STR),
                 SqlUtil.formatColumn(
                         context.getString(R.string.moviedb_trailer_url_sql_column_name),
                         DEF_STR),
-                SqlUtil.formatColumn(context.getString(R.string.moviedb_id_param),
+                SqlUtil.formatColumn(
+                        FAVORITES_TABLE_NAME + context.getString(R.string.moviedb_id_param),
                         DEF_STR),
                 String.format(DEF_FOREIGN_KEY,
-                        context.getString(R.string.moviedb_id_param),
+                        FAVORITES_TABLE_NAME + context.getString(R.string.moviedb_id_param),
                         FAVORITES_TABLE_NAME,
                         context.getString(R.string.moviedb_id_param))
         ));

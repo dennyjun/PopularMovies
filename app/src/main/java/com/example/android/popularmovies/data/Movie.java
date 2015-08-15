@@ -77,10 +77,12 @@ public class Movie implements Serializable {
         try {
             setAdult(obj.getBoolean(c.getString(R.string.moviedb_adult_param)));
             setBackdropPath(obj.getString(c.getString(R.string.moviedb_backdrop_path_param)));
-            final JSONArray a = obj.getJSONArray(c.getString(R.string.moviedb_genre_ids_param));
-            setGenreIds(new String[a.length()]);
-            for(int i = 0; i < a.length(); ++i) {
-                getGenreIds()[i] = a.getString(i);
+            if(obj.has(c.getString(R.string.moviedb_genre_ids_param))) {
+                final JSONArray a = obj.getJSONArray(c.getString(R.string.moviedb_genre_ids_param));
+                setGenreIds(new String[a.length()]);
+                for (int i = 0; i < a.length(); ++i) {
+                    getGenreIds()[i] = a.getString(i);
+                }
             }
             setId(obj.getString(c.getString(R.string.moviedb_id_param)));
             setOriginalLanguage(

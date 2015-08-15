@@ -52,7 +52,10 @@ public class MovieContentProvider extends ContentProvider {
                         String[] selectionArgs, String sortOrder) {
         final SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
         queryBuilder.setTables(getTableName(uri));
-        queryBuilder.appendWhere(buildWhereClause(uri));
+        final String whereClause = buildWhereClause(uri);
+        if(!whereClause.isEmpty()) {
+            queryBuilder.appendWhere(whereClause);
+        }
         final Cursor cursor = queryBuilder.query(
                 movieDbHelper.getReadableDatabase(),
                 projection,

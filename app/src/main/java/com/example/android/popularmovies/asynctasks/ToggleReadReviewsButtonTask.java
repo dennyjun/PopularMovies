@@ -67,7 +67,7 @@ public class ToggleReadReviewsButtonTask extends GetMovieDataTask<MovieReview> {
         baseUrl.appendPath(id);
         baseUrl.appendPath(c.getString(R.string.moviedb_review_path));
         baseUrl.appendQueryParameter(c.getString(R.string.moviedb_api_key_param),
-                AppUtil.getMetaData(c, c.getString(R.string.moviedb_api_key_meta_data)));
+                AppUtil.getMetaDataString(c, R.string.moviedb_api_key_meta_data));
         return baseUrl.build().toString();
     }
 }

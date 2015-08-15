@@ -65,8 +65,8 @@
             android:value="moviedb" />
 
         <meta-data
-            android:name="@string/sql_movie_database_version"
-            android:value="2" />
+            android:name="@string/sql_movie_database_version_meta_data"
+            android:value="4" />
 
         <meta-data
             android:name="@string/moviedb_api_key_meta_data"
