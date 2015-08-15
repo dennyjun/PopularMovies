@@ -11,5 +11,5 @@
     app:cpb_colorProgress="@android:color/black"
     app:cpb_colorIndicatorBackground="@android:color/black"
     app:cpb_cornerRadius="10dp"
-    app:cpb_textError="No Reviews"
-    app:cpb_textComplete="Read Reviews" />
+    app:cpb_textError="@string/review_button_error_text"
+    app:cpb_textComplete="@string/review_button_complete_text" />
