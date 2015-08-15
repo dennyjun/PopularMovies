@@ -57,9 +57,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
                     null);
             return cursor.getCount() != 0;
         } finally {
-            if(cursor != null) {
-                cursor.close();
-            }
+            if(cursor != null) cursor.close();
         }
     }
 
