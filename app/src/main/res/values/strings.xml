@@ -88,8 +88,8 @@
     <string name="movie_review_recycler_view_state_key">reviewsRecyclerViewKey</string>
     <string name="movie_review_adapter_state_key">movieReviewAdapterKey</string>
 
-    <string name="movie_trailer_na">Trailers Not Available</string>
-    <string name="movie_reviews_na">Reviews Not Available</string>
+    <string name="movie_trailer_na">Trailers N/A</string>
+    <string name="movie_reviews_na">Reviews N/A</string>
 
     <string name="sql_movie_database_name_meta_data">sql.movie.database.name</string>
     <string name="sql_movie_database_version_meta_data">sql.movie.database.version</string>
@@ -100,7 +100,4 @@
     <string name="activity_label_popular_movies">Popular Movies</string>
     <string name="activity_label_highest_rated_movies">Highest Rated Movies</string>
     <string name="activity_label_favorite_movies">Favorite Movies</string>
-
-    <string name="review_button_complete_text">Read Reviews</string>
-    <string name="review_button_error_text">Reviews N/A</string>
 </resources>

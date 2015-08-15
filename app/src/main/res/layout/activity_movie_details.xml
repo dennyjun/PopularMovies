@@ -9,11 +9,35 @@
     <ScrollView
         android:id="@+id/activity_details_scrollview"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:layout_height="fill_parent"
+        android:scrollbarStyle="outsideInset">
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:orientation="vertical">
+            <fragment
+                android:id="@+id/movie_title_fragment"
+                android:name="com.example.android.popularmovies.fragments.MovieTitleFragment"
+                tools:layout="@layout/fragment_movie_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="4dp" />
+
+            <fragment
+                android:id="@+id/movie_rating_fragment"
+                android:name="com.example.android.popularmovies.fragments.MovieRatingFragment"
+                tools:layout="@layout/fragment_movie_rating"
+                android:layout_gravity="center_vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="15dp" />
+
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -30,59 +54,24 @@
                         android:id="@+id/movie_details_poster"
                         android:minHeight="255dp"
                         android:minWidth="185dp" />
-
                 </LinearLayout>
 
                 <Space
-                    android:layout_width="20dp"
+                    android:layout_width="10dp"
                     android:layout_height="100dp" />
 
-                <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_gravity="center_vertical">
-                    <fragment
-                        android:id="@+id/movie_title_fragment"
-                        android:name="com.example.android.popularmovies.fragments.MovieTitleFragment"
-                        tools:layout="@layout/fragment_movie_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                <fragment
+                    android:id="@+id/movie_trailer_fragment"
+                    android:name="com.example.android.popularmovies.fragments.MovieTrailerFragment"
+                    tools:layout="@layout/fragment_movie_trailer"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
 
-                    <Space
-                        android:layout_width="match_parent"
-                        android:layout_height="10dp" />
-
-                    <fragment
-                        android:id="@+id/movie_rating_fragment"
-                        android:name="com.example.android.popularmovies.fragments.MovieRatingFragment"
-                        tools:layout="@layout/fragment_movie_rating"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                    <Space
-                        android:layout_width="match_parent"
-                        android:layout_height="5dp" />
-
-                    <fragment
-                        android:id="@+id/movie_review_button_fragment"
-                        android:name="com.example.android.popularmovies.fragments.MovieReviewButtonFragment"
-                        tools:layout="@layout/fragment_movie_review_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
             </LinearLayout>
 
             <Space
                 android:layout_width="100dp"
                 android:layout_height="20dp" />
-
-            <fragment
-                android:id="@+id/movie_trailer_fragment"
-                android:name="com.example.android.popularmovies.fragments.MovieTrailerFragment"
-                tools:layout="@layout/fragment_movie_trailer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
 
             <fragment
                 android:id="@+id/movie_overview_fragment"

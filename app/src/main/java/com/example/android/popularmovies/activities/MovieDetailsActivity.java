@@ -116,6 +116,13 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 displayNotFavoriteIcon(item);
             }
             return true;
+        } else if(id == R.id.action_reviews) {
+            final Intent intent = new Intent(this, MovieReviewsActivity.class);
+            final String idParam = getString(R.string.moviedb_id_param);
+            final Movie movie = getMovieFromIntent(getApplicationContext());
+            intent.putExtra(idParam, movie.getId());
+            startActivity(intent);
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

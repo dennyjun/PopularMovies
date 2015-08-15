@@ -24,7 +24,8 @@
         <ScrollView
             android:id="@+id/activity_details_scrollview"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+            android:layout_height="fill_parent"
+            android:scrollbarStyle="outsideInset">
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
@@ -43,31 +44,15 @@
 
                         <Space
                             android:layout_width="100dp"
-                            android:layout_height="10dp" />
+                            android:layout_height="5dp" />
 
-                        <LinearLayout
+                        <fragment
+                            android:id="@+id/movie_rating_fragment"
+                            android:name="com.example.android.popularmovies.fragments.MovieRatingFragment"
+                            tools:layout="@layout/fragment_movie_rating"
+                            android:layout_gravity="center_vertical"
                             android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-                            <fragment
-                                android:id="@+id/movie_rating_fragment"
-                                android:name="com.example.android.popularmovies.fragments.MovieRatingFragment"
-                                tools:layout="@layout/fragment_movie_rating"
-                                android:layout_gravity="center_vertical"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
-
-                            <Space
-                                android:layout_width="10dp"
-                                android:layout_height="match_parent" />
-
-                            <fragment
-                                android:id="@+id/movie_review_button_fragment"
-                                android:name="com.example.android.popularmovies.fragments.MovieReviewButtonFragment"
-                                tools:layout="@layout/fragment_movie_review_button"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
-                        </LinearLayout>
+                            android:layout_height="wrap_content" />
 
                         <Space
                             android:layout_width="100dp"

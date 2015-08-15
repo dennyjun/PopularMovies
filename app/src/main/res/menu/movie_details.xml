@@ -6,4 +6,8 @@
         android:icon="@mipmap/ic_favorite_border_blue_48dp"
         android:title="Favorite"
         app:showAsAction="always" />
+    <item android:id="@+id/action_reviews"
+        android:title="Reviews"
+        android:icon="@mipmap/ic_comment_white_48dp"
+        app:showAsAction="always" />
 </menu>

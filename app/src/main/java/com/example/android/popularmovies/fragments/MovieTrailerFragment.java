@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -54,7 +55,7 @@ public class MovieTrailerFragment extends Fragment {
         final int id = item.getItemId();
         switch (id) {
             case R.id.action_share:
-                if( movieTrailerAdapter.getItem(0) == null) {
+                if(movieTrailerAdapter.getItem(0) == null) {
                     Toast.makeText(getActivity().getBaseContext(),
                             "Trailer Not Available To Share",
                             Toast.LENGTH_SHORT).show();
@@ -119,10 +120,16 @@ public class MovieTrailerFragment extends Fragment {
         final RecyclerView view =
                 (RecyclerView) rootView.findViewById(R.id.movie_trailer_recyclerview);
         view.setHasFixedSize(true);
+
+        final int orientation =
+                (getActivity().getResources().getConfiguration().orientation ==
+                        Configuration.ORIENTATION_PORTRAIT)
+                        ? LinearLayoutManager.VERTICAL
+                        : LinearLayoutManager.HORIZONTAL;
         final LinearLayoutManager linearLayoutManager =
                 new LinearLayoutManager(
                         rootView.getContext(),
-                        LinearLayoutManager.HORIZONTAL,
+                        orientation,
                         false);
         view.setLayoutManager(linearLayoutManager);
         return view;
