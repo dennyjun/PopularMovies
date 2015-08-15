@@ -21,7 +21,8 @@ import java.util.List;
 public class ToggleReadReviewsButtonTask extends GetMovieDataTask<MovieReview> {
     private final CircularProgressButton circularProgressButton;
 
-    public ToggleReadReviewsButtonTask(final Context context, final CircularProgressButton circularProgressButton) {
+    public ToggleReadReviewsButtonTask(final Context context,
+                                       final CircularProgressButton circularProgressButton) {
         super(context);
         this.circularProgressButton = circularProgressButton;
     }
@@ -49,9 +50,9 @@ public class ToggleReadReviewsButtonTask extends GetMovieDataTask<MovieReview> {
         if(getTotalResults() == 0) {
             circularProgressButton.setOnClickListener(null);
             circularProgressButton.setClickable(false);
-            circularProgressButton.setProgress(-1); // displays error text
+            circularProgressButton.setProgress(-1);                                                 // displays error text
         } else {
-            circularProgressButton.setProgress(100); // displays success text
+            circularProgressButton.setProgress(100);                                                // displays success text
         }
     }
 

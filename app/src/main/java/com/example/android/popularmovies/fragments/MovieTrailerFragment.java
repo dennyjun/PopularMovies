@@ -94,9 +94,8 @@ public class MovieTrailerFragment extends Fragment {
 
     private void retrieveTrailers(final Context context) {
         movieTrailerAdapter.setLoading(true);
-        final Movie movie = new Movie(getActivity().getBaseContext(),
-                getActivity().getIntent().getParcelableExtra(Intent.EXTRA_STREAM));
-        if(getActivity().getIntent().getBooleanExtra("originalFavoriteState", false)) {
+        final Movie movie = getMovieFromIntent(getActivity().getBaseContext());
+        if(getOriginalFavoriteState()) {
             new GetFavoriteTrailersTask(context, movieTrailerAdapter).execute(movie.getId());
         } else {
             new GetMovieTrailersTask(context, movieTrailerAdapter).execute(movie.getId());
@@ -127,30 +126,55 @@ public class MovieTrailerFragment extends Fragment {
     @Override
     public void onDestroy() {
         try {
-            final Intent activityIntent = getActivity().getIntent();
-            final boolean favoriteMovie = activityIntent.getBooleanExtra("favoriteState", false);
-            if(activityIntent.getBooleanExtra("originalFavoriteState", false) == favoriteMovie ||   // nothing changed, don't do anything or
-                    !favoriteMovie) {                                                               // not a favorite movie, favorites table will handle delete if needed
+            final boolean favoriteMovie = isFavoriteMovie();
+            if(getOriginalFavoriteState() == favoriteMovie || !favoriteMovie) {                     // nothing changed, don't do anything or not a favorite movie, favorites table will handle delete if needed
                 return;
             }
-            final Intent intent = new Intent(getActivity().getBaseContext(), FavoriteService.class);
-            intent.putExtra(FavoriteService.INTENT_CMD_PARAM, FavoriteService.CMD_ADD_TRAILERS);
-            final Movie movie = new Movie(getActivity().getBaseContext(),
-                    getActivity().getIntent().getParcelableExtra(Intent.EXTRA_STREAM));
-            final ContentValues[] values = new ContentValues[movieTrailerAdapter.getItemCount()];
-            for(int i = 0; i < values.length; ++i) {
-                if(movieTrailerAdapter.getItemViewType(i) ==
-                        MovieTrailerAdapter.ViewType.NO_DATA.ordinal()) {
-                    continue;
-                }
-                values[i] = movieTrailerAdapter.getItem(i).createContentValues(getActivity());
-                values[i].put(MovieDbHelper.FAVORITES_TABLE_NAME +
-                        getActivity().getString(R.string.moviedb_id_param), movie.getId());
-            }
-            intent.putExtra(Intent.EXTRA_STREAM, values);
-            getActivity().startService(intent);
+            saveTrailersToDatabase();
         } finally {
             super.onDestroy();
         }
+    }
+
+    private void saveTrailersToDatabase() {
+        final Movie movie = getMovieFromIntent(getActivity().getBaseContext());
+        final ContentValues[] values = new ContentValues[movieTrailerAdapter.getItemCount()];
+        for(int i = 0; i < values.length; ++i) {
+            if(!isValidTrailer(i)) {
+                continue;
+            }
+            values[i] = movieTrailerAdapter.getItem(i).createContentValues(getActivity());
+            values[i].put(MovieDbHelper.FAVORITES_TABLE_NAME +
+                    getActivity().getString(R.string.moviedb_id_param), movie.getId());
+        }
+        saveTrailersUsingFavoriteService(values);
+    }
+
+    private boolean isValidTrailer(final int position) {
+        return movieTrailerAdapter.getItemViewType(position) ==
+                MovieTrailerAdapter.ViewType.NORMAL.ordinal();
+    }
+
+    private void saveTrailersUsingFavoriteService(final ContentValues[] trailers) {
+        final Intent intent = new Intent(getActivity().getBaseContext(), FavoriteService.class);
+        intent.putExtra(FavoriteService.INTENT_CMD_PARAM, FavoriteService.CMD_ADD_TRAILERS);
+        intent.putExtra(Intent.EXTRA_STREAM, trailers);
+        getActivity().startService(intent);
+    }
+
+    private boolean getOriginalFavoriteState() {
+        return getActivity().getIntent().getBooleanExtra(
+                getString(R.string.original_favorite_state_intent_param), false);
+    }
+
+    private boolean isFavoriteMovie() {
+        return getActivity().getIntent().getBooleanExtra(
+                getString(R.string.favorite_state_intent_param), false);
+    }
+
+    private Movie getMovieFromIntent(final Context context) {
+        return new Movie(
+                context,
+                getActivity().getIntent().getParcelableExtra(Intent.EXTRA_STREAM));
     }
 }
