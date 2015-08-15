@@ -45,13 +45,16 @@ public class GetFavoriteMoviesTask extends AsyncTask<String, Void, List<Movie>> 
     @Override
     protected List<Movie> doInBackground(String... params) {
         final List<Movie> movies = new LinkedList<>();
-        final Cursor cursor = context.getContentResolver().query(
-                MovieContentProvider.FAVORITES_CONTENT_URI,
-                null,
-                null,
-                null,
-                context.getString(R.string.moviedb_title_param) + " ASC");
+
+        Cursor cursor = null;
         try {
+            cursor = context.getContentResolver().query(
+                    MovieContentProvider.FAVORITES_CONTENT_URI,
+                    null,
+                    null,
+                    null,
+                    context.getString(R.string.moviedb_title_param) + " ASC");
+
             while (cursor.moveToNext()) {
                 final ContentValues contentValues = new ContentValues();
                 DatabaseUtils.cursorRowToContentValues(cursor, contentValues);
@@ -64,7 +67,7 @@ public class GetFavoriteMoviesTask extends AsyncTask<String, Void, List<Movie>> 
                 }
             }
         } finally {
-            cursor.close();
+            if(cursor != null) cursor.close();
         }
         return movies;
     }
