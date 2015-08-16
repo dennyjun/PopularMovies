@@ -31,6 +31,7 @@ import com.example.android.popularmovies.asynctasks.GetFavoriteTrailersTask;
 import com.example.android.popularmovies.asynctasks.GetMovieTrailersTask;
 import com.example.android.popularmovies.data.Movie;
 import com.example.android.popularmovies.databases.MovieDbHelper;
+import com.example.android.popularmovies.listeners.onclick.FullScreenImagePreviewListener;
 import com.example.android.popularmovies.providers.MovieContentProvider;
 import com.example.android.popularmovies.receivers.OnConnectReceiver;
 import com.example.android.popularmovies.services.FavoriteService;
@@ -263,8 +264,12 @@ public class MovieDetailsFragment extends Fragment {
     }
 
     private void loadPoster() {
-        final Movie movie = getMovieFromIntent(getActivity().getBaseContext());
+        final Context context = getActivity().getBaseContext();
+        final Movie movie = getMovieFromIntent(context);
         final ImageView view = (ImageView) getActivity().findViewById(R.id.movie_details_poster);
+        view.setOnClickListener(
+                new FullScreenImagePreviewListener(movie.buildLargePosterUrl(context)));
+        view.setClickable(true);
 
         Glide.with(this)
                 .load(movie.getPosterUrl())

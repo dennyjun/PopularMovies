@@ -103,7 +103,7 @@ public class Movie implements Serializable {
             setVideo(obj.getBoolean(c.getString(R.string.moviedb_video_param)));
             setVoteAverage(obj.getDouble(c.getString(R.string.moviedb_vote_avg_param)));
             setVoteCount(obj.getInt(c.getString(R.string.moviedb_vote_count_param)));
-            setPosterUrl(buildPosterUrl(c, getPosterPath()));
+            setPosterUrl(buildSmallPosterUrl(c));
         } catch (JSONException e) {
             Log.e(LOG_TAG, "Unable to deserialize JSONObject.", e);
         }
@@ -138,10 +138,22 @@ public class Movie implements Serializable {
         return values;
     }
 
-    private String buildPosterUrl(final Context c, final String posterPath) {
+    public String buildLargePosterUrl(final Context c) {
+        return buildPosterUrl(c,
+                c.getString(R.string.moviedb_poster_path_size_w500),
+                getPosterPath());
+    }
+
+    private String buildPosterUrl(final Context c, final String posterSize, final String posterPath) {
         return c.getString(R.string.moviedb_poster_path_base_url)
-                + c.getString(R.string.moviedb_poster_path_size_w185)
+                + posterSize
                 + posterPath;
+    }
+
+    private String buildSmallPosterUrl(final Context c) {
+        return buildPosterUrl(c,
+                c.getString(R.string.moviedb_poster_path_size_w185),
+                getPosterPath());
     }
 
     @Override

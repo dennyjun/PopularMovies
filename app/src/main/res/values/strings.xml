@@ -44,6 +44,7 @@
 
     <string name="moviedb_poster_path_base_url">http://image.tmdb.org/t/p/</string>
     <string name="moviedb_poster_path_size_w185">w185</string>
+    <string name="moviedb_poster_path_size_w500">w500</string>
     <string name="title_activity_movie_details">Details</string>
 
     <string name="pref_sort_by_title">Sort Movies By</string>
