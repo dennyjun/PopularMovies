@@ -1,0 +1,79 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/movieDetailsLinearLayout">
+    <LinearLayout
+        style="@style/horizontalLinearLayout"
+        android:layout_height="match_parent">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:id="@+id/movie_details_poster"
+            android:minHeight="255dp"
+            android:minWidth="185dp" />
+
+        <Space
+            android:layout_width="10dp"
+            android:layout_height="fill_parent" />
+
+        <ScrollView
+            android:id="@+id/movie_details_scrollview"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:scrollbarStyle="outsideInset">
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/title_text_view"
+                    android:text="Title"
+                    style="@style/largeWhiteText"/>
+                <TextView
+                    android:id="@+id/year_text_view"
+                    android:text="date"
+                    style="@style/smallWhiteText" />
+                <Space
+                    android:layout_width="100dp"
+                    android:layout_height="5dp" />
+                <RatingBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/movie_rating_bar"
+                    android:numStars="5"
+                    style="?android:attr/ratingBarStyleSmall" />
+
+                <Space
+                    android:layout_width="10dp"
+                    android:layout_height="match_parent" />
+
+                <TextView
+                    android:id="@+id/movie_rating_text_view"
+                    android:text="0.0 - 0 votes"
+                    style="@style/smallWhiteText" />
+
+                <Space
+                    android:layout_width="100dp"
+                    android:layout_height="20dp" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/movie_trailer_recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fadeScrollbars="false"
+                    android:scrollbars="horizontal"
+                    android:minHeight="100dp"/>
+
+                <TextView
+                    android:id="@+id/movie_overview_text_view"
+                    android:text="..."
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    style="@style/whiteText" />
+
+                <Space
+                    android:layout_width="100dp"
+                    android:layout_height="5dp" />
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+</LinearLayout>
