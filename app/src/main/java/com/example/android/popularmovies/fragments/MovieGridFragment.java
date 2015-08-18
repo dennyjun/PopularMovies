@@ -1,11 +1,14 @@
 package com.example.android.popularmovies.fragments;
 
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,10 +20,13 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.android.popularmovies.R;
+import com.example.android.popularmovies.activities.MovieDetailsActivity;
 import com.example.android.popularmovies.activities.SettingsActivity;
 import com.example.android.popularmovies.adapters.recyclerview.BaseRecyclerAdapter;
 import com.example.android.popularmovies.adapters.recyclerview.MoviePosterAdapter;
 import com.example.android.popularmovies.asynctasks.GetFavoriteMoviesTask;
+import com.example.android.popularmovies.callbacks.OpenMovieDetailsCallback;
+import com.example.android.popularmovies.data.Movie;
 import com.example.android.popularmovies.receivers.FavoriteReceiver;
 import com.example.android.popularmovies.receivers.GetMovieReceiver;
 import com.example.android.popularmovies.receivers.OnConnectReceiver;
@@ -31,6 +37,7 @@ import com.example.android.popularmovies.utils.AppUtil;
  * A placeholder fragment containing a simple view.
  */
 public class MovieGridFragment extends Fragment {
+    private boolean twoPaneMode = false;
 
     private GetMovieReceiver getMovieReceiver;
     private FavoriteReceiver favoriteReceiver;
@@ -47,6 +54,7 @@ public class MovieGridFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        twoPaneMode = AppUtil.isTabletLayout(getActivity().getBaseContext());
     }
 
     @Override
@@ -82,7 +90,7 @@ public class MovieGridFragment extends Fragment {
         moviesRecyclerView.setHasFixedSize(true);
         final int col =
                 (getActivity().getResources().getConfiguration().orientation ==
-                        Configuration.ORIENTATION_PORTRAIT)
+                        Configuration.ORIENTATION_PORTRAIT) || twoPaneMode
                         ? 2
                         : 4;
 
@@ -108,6 +116,7 @@ public class MovieGridFragment extends Fragment {
         } else {
             moviesRecyclerView.setAdapter(moviePosterAdapter);
         }
+        moviePosterAdapter.setOpenMovieDetailsCallback(createOpenMovieDetailsCallback());
 
         getMovieReceiver = new GetMovieReceiver(moviePosterAdapter);
         favoriteReceiver = new FavoriteReceiver(moviePosterAdapter);
@@ -115,7 +124,7 @@ public class MovieGridFragment extends Fragment {
             @Override
             public void run() {
                 if(moviePosterAdapter.sortMethodChanged()) {
-                    updateActivityTitle();
+                    AppUtil.removeFragment(getFragmentManager(), MovieDetailsFragment.TAG);
                     moviePosterAdapter.resetAdapter();
                     updateMovieGrid();
                 } else if(movieGridNeedsUpdating()) {
@@ -124,6 +133,49 @@ public class MovieGridFragment extends Fragment {
             }
         };
         return rootView;
+    }
+
+    private OpenMovieDetailsCallback createOpenMovieDetailsCallback() {
+        return new OpenMovieDetailsCallback() {
+            @Override
+            public void openMovieDetails(Movie movie) {
+                final Context context = getActivity().getBaseContext();
+                if(twoPaneMode()) {
+                    if(alreadyOpen(movie)) {
+                        return;
+                    }
+                    final MovieDetailsFragment movieDetailsFragment = new MovieDetailsFragment();
+                    final Bundle bundle = new Bundle();
+                    bundle.putParcelable(Intent.EXTRA_STREAM, movie.createContentValues(context));
+                    movieDetailsFragment.setArguments(bundle);
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.movie_details_container,
+                                    movieDetailsFragment,
+                                    MovieDetailsFragment.TAG)
+                            .commit();
+                } else {
+                    final Intent intent = new Intent(context, MovieDetailsActivity.class);
+                    intent.putExtra(Intent.EXTRA_STREAM, movie.createContentValues(context));
+                    startActivity(intent);
+                }
+            }
+
+            @Override
+            public boolean alreadyOpen(Movie movie) {
+                final FragmentManager fm = getFragmentManager();
+                final MovieDetailsFragment movieDetailsFragment =
+                        (MovieDetailsFragment) fm.findFragmentByTag(MovieDetailsFragment.TAG);
+                return movieDetailsFragment != null
+                        && ((ContentValues)movieDetailsFragment.getMovieParcelable())
+                        .getAsString(getString(R.string.moviedb_id_param))
+                        .equals(movie.getId());
+            }
+
+            @Override
+            public boolean twoPaneMode() {
+                return twoPaneMode;
+            }
+        };
     }
 
     /**
@@ -150,12 +202,14 @@ public class MovieGridFragment extends Fragment {
         getActivity().registerReceiver(onConnectReceiver, intentFilter);
 
         if(moviePosterAdapter.sortMethodChanged()) {
-            updateActivityTitle();
+            AppUtil.removeFragment(getFragmentManager(), MovieDetailsFragment.TAG);
             moviePosterAdapter.resetAdapter();
             updateMovieGrid();
         } else if(movieGridNeedsUpdating()) {
             updateMovieGrid();
         }
+
+        updateActivityTitle();
     }
 
     @Override
@@ -172,7 +226,7 @@ public class MovieGridFragment extends Fragment {
     }
 
     private void updateActivityTitle() {
-        final String sortMethod = moviePosterAdapter.getSortMethodFromPref();
+        final String sortMethod = AppUtil.getSortMethodFromPref(getActivity().getBaseContext());
         final String mostPopular = getString(R.string.moviedb_popularity_param);
         final String highestRating = getString(R.string.moviedb_vote_avg_param);
         final String favorites = getString(R.string.pref_sort_by_favorites);
@@ -194,17 +248,18 @@ public class MovieGridFragment extends Fragment {
     }
 
     private void updateMovieGrid() {
+        final Context context = getActivity().getBaseContext();
         if(getString(R.string.pref_sort_by_favorites).equals(
-                moviePosterAdapter.getSortMethodFromPref())) {
+                AppUtil.getSortMethodFromPref(context))) {
             moviePosterAdapter.setLoading(true);
             moviePosterAdapter.updateSortMethod();
-            new GetFavoriteMoviesTask(getActivity().getBaseContext(), moviePosterAdapter).execute();
+            new GetFavoriteMoviesTask(context, moviePosterAdapter).execute();
             return;
         }
 
-        if(!AppUtil.isConnectedToInternet(getActivity())) {
+        if(!AppUtil.isConnectedToInternet(context)) {
             Toast.makeText(
-                    getActivity(),
+                    context,
                     "Failed to load movies! Please check your internet connection.",
                     Toast.LENGTH_LONG).show();
             return;

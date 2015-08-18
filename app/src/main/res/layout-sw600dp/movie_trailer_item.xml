@@ -11,7 +11,7 @@
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
         android:paddingRight="10dp"
-        android:paddingLeft="10dp" />
+        android:paddingLeft="10dp"/>
     <TextView
         android:id="@+id/movie_trailer_preview_label"
         android:layout_width="wrap_content"

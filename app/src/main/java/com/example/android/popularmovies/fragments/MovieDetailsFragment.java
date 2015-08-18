@@ -8,6 +8,7 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -35,17 +36,27 @@ import com.example.android.popularmovies.listeners.onclick.FullScreenImagePrevie
 import com.example.android.popularmovies.providers.MovieContentProvider;
 import com.example.android.popularmovies.receivers.OnConnectReceiver;
 import com.example.android.popularmovies.services.FavoriteService;
+import com.example.android.popularmovies.utils.AppUtil;
 
 import java.text.DecimalFormat;
 
 /**
  * Created by Denny on 8/15/2015.
+ * Displays movie details
  */
 public class MovieDetailsFragment extends Fragment {
+    public static final String TAG = "MOVIE_DETAILS_TAG";
+
     private static final DecimalFormat ratingFormat = new DecimalFormat("#.0");
     private OnConnectReceiver onConnectReceiver;
     private RecyclerView trailersRecyclerView;
     private MovieTrailerAdapter movieTrailerAdapter;
+
+    private Movie movie;
+    private boolean twoPaneMode = false;
+    private boolean favoriteMovie;
+    private boolean originalFavoriteState;
+    private Toast favoriteStatusToast;
 
     public MovieDetailsFragment() {
         // Required empty public constructor
@@ -62,15 +73,11 @@ public class MovieDetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_movie_details, container, false);
-        final Intent intent = getActivity().getIntent();
-        final Movie movie = new Movie(rootView.getContext(),
-                intent.getParcelableExtra(Intent.EXTRA_STREAM));
-
-        setupTitleTextView(rootView, movie);
-        setupReleaseDateTextView(rootView, movie);
-        setupRatingBar(rootView, movie);
-        setupRatingTextView(rootView, movie);
-        setupOverviewTextView(rootView, movie);
+        loadTitleTextView(rootView);
+        loadReleaseDateTextView(rootView);
+        loadRatingBar(rootView);
+        loadRatingTextView(rootView);
+        loadOverviewTextView(rootView);
 
         trailersRecyclerView = createTrailersRecyclerView(rootView);
 
@@ -83,14 +90,8 @@ public class MovieDetailsFragment extends Fragment {
             retrieveTrailers(rootView.getContext());
         }
 
-        onConnectReceiver = new OnConnectReceiver() {
-            @Override
-            public void run() {
-                if(needToRetrieveTrailers()) {
-                    retrieveTrailers(rootView.getContext());
-                }
-            }
-        };
+        loadOnConnectReceiver(rootView.getContext());
+        loadPoster(rootView);
 
         return rootView;
     }
@@ -98,48 +99,33 @@ public class MovieDetailsFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {                             // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.movie_details, menu);
-        if(isFavoriteMovie()) {
-            final MenuItem menuItem = menu.findItem(R.id.action_favorite);
-            final boolean displayToastMsg = false;
-            displayFavoriteIcon(menuItem, displayToastMsg);
-        }
+        final MenuItem menuItem = menu.findItem(R.id.action_favorite);
+        final boolean displayToastMsg = false;
+        toggleFavoriteIcon(favoriteMovie, menuItem, displayToastMsg);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {                                           // Handle action bar item clicks here. The action bar will
         final int id = item.getItemId();                                                            // automatically handle clicks on the Home/Up button, so long
         if(id == R.id.action_favorite) {                                                            // as you specify a parent activity in AndroidManifest.xml.
-            final boolean favoriteMovie = !isFavoriteMovie();
-            setFavoriteMovie(favoriteMovie);                                                        // button press means favorite state has changed, update favorite flag
-            if(favoriteMovie) {
-                final boolean displayToastMsg = true;
-                displayFavoriteIcon(item, displayToastMsg);
-            } else {
-                displayNotFavoriteIcon(item);
+            favoriteMovie = !favoriteMovie;                                                         // button press means favorite state has changed, update favorite flag
+            final boolean displayToastMsg = true;
+            toggleFavoriteIcon(favoriteMovie, item, displayToastMsg);
+            if (AppUtil.isTabletLayout(getActivity().getBaseContext())) {                           // Only make changes to favorites right away with tablet view,
+                processFavoriteServiceCommand(createFavoriteServiceCommand(favoriteMovie));         // phone view will make changes ondestroy to minimize unnecessary calls
             }
             return true;
         } else if(id == R.id.action_reviews) {
-            final Intent intent =
-                    new Intent(getActivity().getBaseContext(), MovieReviewsActivity.class);
-            final String idParam = getString(R.string.moviedb_id_param);
-            final Movie movie = getMovieFromIntent(getActivity().getBaseContext());
-            intent.putExtra(idParam, movie.getId());
-            startActivity(intent);
+            openMovieReviews(getMovie().getId());
             return true;
         } else if(id == R.id.action_share) {
-            if (movieTrailerAdapter.getItem(0) == null) {
+            if(firstTrailerAvailable()) {
+                shareFirstTrailer(getMovie().getTitle(), movieTrailerAdapter.getItem(0).getUrl());
+            } else {
                 Toast.makeText(getActivity().getBaseContext(),
                         "Trailer Not Available To Share",
                         Toast.LENGTH_SHORT).show();
-                return false;
             }
-            final Movie movie = getMovieFromIntent(getActivity().getBaseContext());
-            final String subject = movie.getTitle();
-            final String msg =
-                    "Check out this movie trailer for " + movie.getTitle() + "!\n\n" +
-                            movieTrailerAdapter.getItem(0).getUrl();
-            final Intent sharingIntent = getDefaultShareIntent(subject, msg);
-            startActivity(Intent.createChooser(sharingIntent, "Share Trailer #1 Using:"));
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -148,7 +134,6 @@ public class MovieDetailsFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        loadPoster();
         getActivity().registerReceiver(onConnectReceiver,
                 new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
@@ -172,66 +157,78 @@ public class MovieDetailsFragment extends Fragment {
     @Override
     public void onDestroy() {
         try {
-            final boolean favoriteMovie = isFavoriteMovie();
-            if(getOriginalFavoriteState() == favoriteMovie) {                                       // nothing changed, don't do anything
+            if(AppUtil.isTabletLayout(getActivity().getBaseContext())) {                            // ignore when in tablet layout, changes are made real time
+               return;
+            }
+            if(favoriteMovie == originalFavoriteState) {                                            // nothing changed, don't do anything
                 return;
             }
-            final String command = favoriteMovie
-                    ? FavoriteService.CMD_ADD_FAV
-                    : FavoriteService.CMD_REM_FAV;
-            processFavoriteServiceCommand(command);
+            processFavoriteServiceCommand(createFavoriteServiceCommand(favoriteMovie));
         } finally {
             super.onDestroy();
         }
     }
 
-    private void setupOverviewTextView(final View rootView, final Movie movie) {
+    private void loadOverviewTextView(final View rootView) {
         final TextView textView = (TextView) rootView.findViewById(R.id.movie_overview_text_view);
-        textView.setText(movie.getOverview());
+        textView.setText(getMovie().getOverview());
     }
 
-    private void setupRatingBar(final View rootView, final Movie movie) {
+    private void loadRatingBar(final View rootView) {
         final RatingBar ratingBar = (RatingBar) rootView.findViewById(R.id.movie_rating_bar);
-        ratingBar.setRating((float) movie.getVoteAverage() * 0.5f);
+        ratingBar.setRating((float) getMovie().getVoteAverage() * 0.5f);
     }
 
-    private void setupRatingTextView(final View rootView, final Movie movie) {
+    private void loadRatingTextView(final View rootView) {
         final TextView textView = (TextView) rootView.findViewById(R.id.movie_rating_text_view);
-        final String rating = ratingFormat.format(movie.getVoteAverage());
-        final String voteCount = String.valueOf(movie.getVoteCount());
+        final String rating = ratingFormat.format(getMovie().getVoteAverage());
+        final String voteCount = String.valueOf(getMovie().getVoteCount());
         textView.setText(rating + " - " + voteCount + " votes");
     }
 
-    private void setupTitleTextView(final View rootView, final  Movie movie) {
+    private void loadTitleTextView(final View rootView) {
         final TextView textView = (TextView) rootView.findViewById(R.id.title_text_view);
-        textView.setText(movie.getTitle());
+        textView.setText(getMovie().getTitle());
     }
 
-    private void setupReleaseDateTextView(final View rootView,  Movie movie) {
+    private void loadReleaseDateTextView(final View rootView) {
         final TextView textView = (TextView) rootView.findViewById(R.id.year_text_view);
-        textView.setText(movie.getReleaseDate());
+        textView.setText(getMovie().getReleaseDate());
+    }
+
+    private void loadOnConnectReceiver(final Context context) {
+        onConnectReceiver = new OnConnectReceiver() {
+            @Override
+            public void run() {
+                if(needToRetrieveTrailers()) {
+                    retrieveTrailers(context);
+                }
+            }
+        };
     }
 
     private void saveScrollViewState(Bundle outState) {
         final ScrollView scrollView =
                 (ScrollView) getActivity().findViewById(R.id.movie_details_scrollview);
-        final int scrollPosY = scrollView.getScrollY();
-        outState.putInt(getString(R.string.movie_details_scroll_state_key), scrollPosY);
+        if(scrollView != null) {
+            final int scrollPosY = scrollView.getScrollY();
+            outState.putInt(getString(R.string.movie_details_scroll_state_key), scrollPosY);
+        }
     }
 
     private void loadScrollViewState(Bundle savedInstanceState, final View rootview) {
-        final int scrollPosY =
-                savedInstanceState.getInt(getString(R.string.movie_details_scroll_state_key));
         final ScrollView scrollView =
                 (ScrollView) rootview.findViewById(R.id.movie_details_scrollview);
-        scrollView.setScrollY(scrollPosY);
+        if(scrollView != null) {
+            final int scrollPosY =
+                    savedInstanceState.getInt(getString(R.string.movie_details_scroll_state_key));
+            scrollView.setScrollY(scrollPosY);
+        }
     }
 
     private void loadFavoriteState() {
-        final Movie movie = getMovieFromIntent(getActivity().getBaseContext());                     // super.onCreate will create the fragments so need to store favorite state before that
-        final boolean favoriteMovie = checkIfFavoriteMovieFromDb(movie.getId());
-        setOriginalFavoriteState(favoriteMovie);                                                    // store original state, need to check when activity is destroyed if need to do work (save / delete fav)
-        setFavoriteMovie(favoriteMovie);
+        favoriteMovie = checkIfFavoriteMovieFromDb(getMovie().getId());
+        originalFavoriteState = favoriteMovie;                                                      // store original state, need to check when activity is destroyed if need to do work (save / delete fav)
     }
 
     private boolean checkIfFavoriteMovieFromDb(final String movieId) {
@@ -249,30 +246,29 @@ public class MovieDetailsFragment extends Fragment {
         }
     }
 
-    private void displayFavoriteIcon(final MenuItem menuItem, boolean displayToastMsg) {
-        menuItem.setIcon(R.mipmap.ic_favorite_48dp);
+    private void toggleFavoriteIcon(final boolean favorite, final MenuItem menuItem,
+                                    boolean displayToastMsg) {
+        final String msg;
+        if(favorite) {
+            menuItem.setIcon(R.mipmap.ic_favorite_48dp);
+            msg = "Added To Favorites";
+        } else {
+            menuItem.setIcon(R.mipmap.ic_favorite_border_blue_48dp);
+            msg = "Removed From Favorites";
+        }
         if(displayToastMsg) {
-            Toast.makeText(getActivity().getBaseContext(),
-                    "Added To Favorites", Toast.LENGTH_SHORT).show();
+            showFavoriteStatusMsg(getActivity().getBaseContext(), msg);
         }
     }
 
-    private void displayNotFavoriteIcon(final MenuItem menuItem) {
-        menuItem.setIcon(R.mipmap.ic_favorite_border_blue_48dp);
-        Toast.makeText(getActivity().getBaseContext(),
-                "Removed From Favorites", Toast.LENGTH_SHORT).show();
-    }
-
-    private void loadPoster() {
-        final Context context = getActivity().getBaseContext();
-        final Movie movie = getMovieFromIntent(context);
-        final ImageView view = (ImageView) getActivity().findViewById(R.id.movie_details_poster);
-        view.setOnClickListener(
-                new FullScreenImagePreviewListener(movie.buildLargePosterUrl(context)));
+    private void loadPoster(final View rootView) {
+        final ImageView view = (ImageView) rootView.findViewById(R.id.movie_details_poster);
+        view.setOnClickListener(new FullScreenImagePreviewListener(
+                getMovie().buildLargePosterUrl(rootView.getContext())));
         view.setClickable(true);
 
         Glide.with(this)
-                .load(movie.getPosterUrl())
+                .load(getMovie().getPosterUrl())
                 .fitCenter()
                 .placeholder(R.drawable.image_placeholder)
                 .error(R.drawable.image_na)
@@ -280,42 +276,29 @@ public class MovieDetailsFragment extends Fragment {
     }
 
     private void processFavoriteServiceCommand(final String command) {
-        final Intent intent = new Intent(getActivity().getBaseContext(), FavoriteService.class);
+        final Context context = getActivity().getBaseContext();
+        final Intent intent = new Intent(context, FavoriteService.class);
         intent.putExtra(FavoriteService.INTENT_CMD_PARAM, command);
-        intent.putExtra(Intent.EXTRA_STREAM,                                                        // need to forward as it includes movie data
-                getActivity().getIntent().getParcelableExtra(Intent.EXTRA_STREAM));
+        intent.putExtra(Intent.EXTRA_STREAM, getMovieParcelable());                                 // need to forward as it includes movie data
         getActivity().startService(intent);
         if(command.equals(FavoriteService.CMD_ADD_FAV)) {
             saveTrailersToDatabase();
+        } else if(command.equals(FavoriteService.CMD_REM_FAV)) {
+            if (AppUtil.isTabletLayout(context) &&
+                    AppUtil.getSortMethodFromPref(context)
+                            .equals(getString(R.string.pref_sort_by_favorites))) {
+                AppUtil.removeFragment(getFragmentManager(), TAG);
+            }
         }
     }
 
-    private boolean getOriginalFavoriteState() {
-        return getActivity().getIntent().getBooleanExtra(
-                getString(R.string.original_favorite_state_intent_param), false);
+    private String createFavoriteServiceCommand(final boolean favoriteMovie) {
+        return favoriteMovie
+                ? FavoriteService.CMD_ADD_FAV
+                : FavoriteService.CMD_REM_FAV;
     }
 
-    private void setOriginalFavoriteState(final boolean favoriteState) {
-        getActivity().getIntent().putExtra(
-                getString(R.string.original_favorite_state_intent_param), favoriteState);
-    }
-
-    private boolean isFavoriteMovie() {
-        return getActivity().getIntent().getBooleanExtra(
-                getString(R.string.favorite_state_intent_param), false);
-    }
-
-    private void setFavoriteMovie(final boolean favoriteState) {
-        getActivity().getIntent().putExtra(
-                getString(R.string.favorite_state_intent_param), favoriteState);
-    }
-
-    private Movie getMovieFromIntent(final Context context) {
-        return new Movie(
-                context, getActivity().getIntent().getParcelableExtra(Intent.EXTRA_STREAM));
-    }
-
-    private Intent getDefaultShareIntent(final String subject, final String msg){
+    private Intent createSharingIntent(final String subject, final String msg){
         final Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         intent.setType("text/plain");
@@ -325,7 +308,6 @@ public class MovieDetailsFragment extends Fragment {
     }
 
     private void saveTrailersToDatabase() {
-        final Movie movie = getMovieFromIntent(getActivity().getBaseContext());
         final ContentValues[] values = new ContentValues[movieTrailerAdapter.getItemCount()];
         for(int i = 0; i < values.length; ++i) {
             if(!isValidTrailer(i)) {
@@ -333,7 +315,7 @@ public class MovieDetailsFragment extends Fragment {
             }
             values[i] = movieTrailerAdapter.getItem(i).createContentValues(getActivity());
             values[i].put(MovieDbHelper.FAVORITES_TABLE_NAME +
-                    getActivity().getString(R.string.moviedb_id_param), movie.getId());
+                    getActivity().getString(R.string.moviedb_id_param), getMovie().getId());
         }
         final Intent intent = new Intent(getActivity().getBaseContext(), FavoriteService.class);
         intent.putExtra(FavoriteService.INTENT_CMD_PARAM, FavoriteService.CMD_ADD_TRAILERS);
@@ -354,11 +336,10 @@ public class MovieDetailsFragment extends Fragment {
 
     private void retrieveTrailers(final Context context) {
         movieTrailerAdapter.setLoading(true);
-        final Movie movie = getMovieFromIntent(getActivity().getBaseContext());
-        if(getOriginalFavoriteState()) {
-            new GetFavoriteTrailersTask(context, movieTrailerAdapter).execute(movie.getId());
+        if(originalFavoriteState) {
+            new GetFavoriteTrailersTask(context, movieTrailerAdapter).execute(getMovie().getId());
         } else {
-            new GetMovieTrailersTask(context, movieTrailerAdapter).execute(movie.getId());
+            new GetMovieTrailersTask(context, movieTrailerAdapter).execute(getMovie().getId());
         }
     }
 
@@ -377,7 +358,7 @@ public class MovieDetailsFragment extends Fragment {
 
         final int orientation =
                 (getActivity().getResources().getConfiguration().orientation ==
-                        Configuration.ORIENTATION_PORTRAIT)
+                        Configuration.ORIENTATION_PORTRAIT || twoPaneMode)
                         ? LinearLayoutManager.VERTICAL
                         : LinearLayoutManager.HORIZONTAL;
         final LinearLayoutManager linearLayoutManager =
@@ -387,5 +368,56 @@ public class MovieDetailsFragment extends Fragment {
                         false);
         view.setLayoutManager(linearLayoutManager);
         return view;
+    }
+
+    public Parcelable getMovieParcelable() {
+        twoPaneMode = isTwoPaneMode();
+        if(getArguments() != null) {
+            return getArguments().getParcelable(Intent.EXTRA_STREAM);
+        } else {
+            return getActivity().getIntent().getParcelableExtra(Intent.EXTRA_STREAM);
+        }
+    }
+
+    private boolean isTwoPaneMode() {
+        return getResources().getBoolean(R.bool.has_two_panes);
+    }
+
+    public Movie getMovie() {
+        if(movie == null) {
+            movie = new Movie(getActivity().getBaseContext(), getMovieParcelable());
+        }
+        return movie;
+    }
+
+    public void openMovieReviews(final String id) {
+        final Intent intent =
+                new Intent(getActivity().getBaseContext(), MovieReviewsActivity.class);
+        final String idParam = getString(R.string.moviedb_id_param);
+        intent.putExtra(idParam, id);
+        startActivity(intent);
+    }
+
+    public void shareFirstTrailer(final String movieTitle, final String trailerUrl) {
+        final String msg = "Check out this movie trailer for " + movieTitle + "!\n\n" + trailerUrl;
+        final Intent sharingIntent = createSharingIntent(movieTitle, msg);
+        startActivity(Intent.createChooser(sharingIntent, "Share Trailer #1 Using:"));
+    }
+
+    private boolean firstTrailerAvailable() {
+        return movieTrailerAdapter != null && movieTrailerAdapter.getItem(0) != null;
+    }
+
+    private Toast getFavoriteStatus(final Context context) {                                        // http://stackoverflow.com/questions/2755277/android-hide-all-showed-toast-messages
+        if(favoriteStatusToast == null) {                                                           // Work around for the toast message queue, setText and show
+            favoriteStatusToast = Toast.makeText(context, "", Toast.LENGTH_SHORT);
+        }
+        return favoriteStatusToast;
+    }
+
+    private void showFavoriteStatusMsg(final Context context, final String msg) {
+        final Toast toast = getFavoriteStatus(context);
+        toast.setText(msg);
+        toast.show();
     }
 }

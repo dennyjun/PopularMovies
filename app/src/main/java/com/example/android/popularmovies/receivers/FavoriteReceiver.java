@@ -12,9 +12,12 @@ import com.example.android.popularmovies.adapters.recyclerview.MoviePosterAdapte
 import com.example.android.popularmovies.data.Movie;
 import com.example.android.popularmovies.providers.MovieContentProvider;
 import com.example.android.popularmovies.services.FavoriteService;
+import com.example.android.popularmovies.utils.AppUtil;
 
 /**
  * Created by Denny on 8/13/2015.
+ * Add, remove favorites to the database
+ * Removal of trailers ignored as removing favorites will take care of it from database
  */
 public class FavoriteReceiver extends BroadcastReceiver {
     private static final String LOG_TAG = FavoriteReceiver.class.getSimpleName();
@@ -54,7 +57,7 @@ public class FavoriteReceiver extends BroadcastReceiver {
                 context.getString(R.string.moviedb_id_param) + "=?",
                 new String[]{movie.getId()}
         );
-        if(moviePosterAdapter.getSortMethodFromPref().equals(
+        if(AppUtil.getSortMethodFromPref(context).equals(
                 context.getString(R.string.pref_sort_by_favorites))) {
             moviePosterAdapter.removeItem(movie);
         }

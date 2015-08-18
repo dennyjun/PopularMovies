@@ -2,9 +2,7 @@ package com.example.android.popularmovies.adapters.recyclerview;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,16 +12,18 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.android.popularmovies.R;
-import com.example.android.popularmovies.activities.MovieDetailsActivity;
+import com.example.android.popularmovies.callbacks.OpenMovieDetailsCallback;
 import com.example.android.popularmovies.data.Movie;
 import com.example.android.popularmovies.services.GetMovieService;
 import com.example.android.popularmovies.utils.AppUtil;
 
 /**
  * Created by Denny on 8/6/2015.
+ * Displays movie posters
  */
 public class MoviePosterAdapter extends BaseRecyclerAdapter<Movie> {
     private String sortMethod = null;
+    private transient OpenMovieDetailsCallback openMovieDetailsCallback;
 
     private final transient Handler runnableHandler = new Handler();
     private final transient Runnable getNextPage = new Runnable() {
@@ -52,10 +52,7 @@ public class MoviePosterAdapter extends BaseRecyclerAdapter<Movie> {
         @Override
         public void onClick(View v) {
             final Movie movie = getItem(getAdapterPosition());
-            final Context context = v.getContext();
-            final Intent intent = new Intent(context, MovieDetailsActivity.class);
-            intent.putExtra(Intent.EXTRA_STREAM, movie.createContentValues(context));
-            v.getContext().startActivity(intent);
+            openMovieDetailsCallback.openMovieDetails(movie);
         }
     }
 
@@ -82,7 +79,6 @@ public class MoviePosterAdapter extends BaseRecyclerAdapter<Movie> {
 
         Glide.with(normalViewHolder.posterImageView.getContext())
                 .load(movie.getPosterUrl())
-                .centerCrop()
                 .placeholder(R.drawable.image_placeholder)
                 .error(R.drawable.image_na)
                 .into(normalViewHolder.posterImageView);
@@ -113,15 +109,8 @@ public class MoviePosterAdapter extends BaseRecyclerAdapter<Movie> {
         runnableHandler.post(getNextPage);
     }
 
-    public String getSortMethodFromPref() {
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-        return prefs.getString(
-                getContext().getString(R.string.pref_sort_by_key),
-                getContext().getString(R.string.moviedb_popularity_param));
-    }
-
     public boolean sortMethodChanged() {
-        final String sortMethod = getSortMethodFromPref();
+        final String sortMethod = AppUtil.getSortMethodFromPref(getContext());
         return !sortMethod.equals(this.sortMethod);
     }
 
@@ -130,6 +119,10 @@ public class MoviePosterAdapter extends BaseRecyclerAdapter<Movie> {
     }
 
     public void updateSortMethod() {
-        sortMethod = getSortMethodFromPref();
+        sortMethod = AppUtil.getSortMethodFromPref(getContext());
+    }
+
+    public void setOpenMovieDetailsCallback(OpenMovieDetailsCallback openMovieDetailsCallback) {
+        this.openMovieDetailsCallback = openMovieDetailsCallback;
     }
 }

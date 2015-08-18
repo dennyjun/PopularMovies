@@ -2,12 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    android:layout_marginRight="10dp"
+    android:paddingBottom="10dp"
     android:orientation="vertical">
     <ImageView
         android:id="@+id/movie_trailer_preview_imageview"
-        android:layout_width="120dp"
-        android:layout_height="60dp" />
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        android:paddingRight="10dp" />
     <TextView
         android:id="@+id/movie_trailer_preview_label"
         android:layout_width="match_parent"
