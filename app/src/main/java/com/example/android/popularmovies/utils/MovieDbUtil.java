@@ -25,6 +25,7 @@ public class MovieDbUtil {
      */
     public static final String buildYouTubeThumbnailUrl(final Context context,
                                                         final String youtubeVideoKey) {
-        return context.getString(R.string.youtube_video_thumbnail_url_template, youtubeVideoKey);
+        return context.getString(R.string.youtube_video_thumbnail_url_medqual_template,
+                youtubeVideoKey);
     }
 }

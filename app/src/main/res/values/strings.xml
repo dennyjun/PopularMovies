@@ -68,7 +68,11 @@
     <string name="youtube_base_url">www.youtube.com</string>
     <string name="youtube_watch_path">watch</string>
     <string name="youtube_video_key_param">v</string>
-    <string name="youtube_video_thumbnail_url_template">http://img.youtube.com/vi/%s/default.jpg</string>
+    <string name="youtube_video_thumbnail_url_default_template">http://img.youtube.com/vi/%s/default.jpg</string>       <!-- (120 x 90)-->
+    <string name="youtube_video_thumbnail_url_medqual_template">http://img.youtube.com/vi/%s/mqdefault.jpg</string>     <!-- (320 x 180)-->
+    <string name="youtube_video_thumbnail_url_highqual_template">http://img.youtube.com/vi/%s/hqdefault.jpg</string>    <!-- (480 x 360)-->
+    <string name="youtube_video_thumbnail_url_standard_template">http://img.youtube.com/vi/%s/sddefault.jpg</string>    <!-- (640 x 480)-->
+    <string name="youtube_video_thumbnail_url_maxqual_template">http://img.youtube.com/vi/%s/maxresdefault.jpg</string> <!-- (1920 x 1080)-->
 
     <string name="moviedb_trailer_id_param">id</string>
     <string name="moviedb_trailer_site_param">site</string>
