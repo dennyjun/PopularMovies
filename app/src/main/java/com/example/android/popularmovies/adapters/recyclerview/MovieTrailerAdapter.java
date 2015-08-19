@@ -49,10 +49,7 @@ public class MovieTrailerAdapter extends BaseRecyclerAdapter<MovieTrailer> {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if(getItem(position) == null) {
-            return;
-        }
+    protected void bindData(RecyclerView.ViewHolder holder, int position, MovieTrailer data) {
         final MovieTrailerViewHolder movieTrailerViewHolder = (MovieTrailerViewHolder) holder;
         final MovieTrailer movieTrailer = getItem(position);
         Glide.with(movieTrailerViewHolder.previewImageView.getContext())
@@ -65,6 +62,11 @@ public class MovieTrailerAdapter extends BaseRecyclerAdapter<MovieTrailer> {
 
         movieTrailerViewHolder.labelTextView.setText(
                 getContext().getString(R.string.moviedb_trailer_thumbnail_prefix) + (position + 1));
+    }
+
+    @Override
+    protected void loadMoreData() {
+        // doesn't need to load more
     }
 
     private void setupImageViewToOpenYoutube(final ImageView imageView,

@@ -48,20 +48,15 @@ public class MovieReviewAdapter extends BaseRecyclerAdapter<MovieReview> {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        final MovieReview movieReview = getItem(position);
-        if(movieReview != null) {
-            final NormalViewHolder normalViewHolder = (NormalViewHolder) holder;
-            normalViewHolder.authorTextView.setText(movieReview.getAuthor());
-            normalViewHolder.contentTextView.setText(movieReview.getContent());
-        }
+    protected void bindData(RecyclerView.ViewHolder holder, int position, MovieReview data) {
+        final NormalViewHolder normalViewHolder = (NormalViewHolder) holder;
+        normalViewHolder.authorTextView.setText(data.getAuthor());
+        normalViewHolder.contentTextView.setText(data.getContent());
+    }
 
-        if(isNoMoreData()) {
-            return;
-        }
-        if(position == getItemCount() - 1 && !isLoading()) {
-            getMoreReviews();
-        }
+    @Override
+    protected void loadMoreData() {
+        getMoreReviews();
     }
 
     public void getMoreReviews() {

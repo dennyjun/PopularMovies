@@ -80,6 +80,7 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
         ((CardView) listItem).setUseCompatPadding(true);
         return new NoDataViewHolder(listItem);
     }
+
     protected abstract int getNoDataViewLayoutId();
 
     @Override
@@ -99,6 +100,38 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
     public int getItemCount() {
         return recyclerList.size();
     }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        final T data = getItem(position);
+        if(data == null) {
+            return;
+        }
+
+        bindData(holder, position, data);
+
+        if(isNoMoreData()) {
+            return;
+        }
+
+        if(almostAtEndOfList(position)) {
+            loadMoreData();
+        }
+    }
+
+    /**
+     * Bind data to views
+     * @param holder
+     * @param position
+     * @param data
+     */
+    protected abstract void bindData(final RecyclerView.ViewHolder holder,
+                                     final int position, final T data);
+
+    /**
+     * Need to specify how to load more data when almost at the end of the list
+     */
+    protected abstract void loadMoreData();
 
     public T getItem(final int position) {
         return recyclerList.get(position);
@@ -153,6 +186,10 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
         noMoreData = false;
         page = 1;
         notifyDataSetChanged();
+    }
+
+    private boolean almostAtEndOfList(final int position) {
+        return position == getItemCount() - 1 && !isLoading();
     }
 
     public boolean isLoading() {

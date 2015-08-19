@@ -69,34 +69,26 @@ public class MoviePosterAdapter extends BaseRecyclerAdapter<Movie> {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        final Movie movie = getItem(position);
-        if(movie == null) {
-            return;
-        }
-
+    protected void bindData(RecyclerView.ViewHolder holder, int position, Movie data) {
         final NormalViewHolder normalViewHolder = (NormalViewHolder) holder;
 
         Glide.with(normalViewHolder.posterImageView.getContext())
-                .load(movie.getPosterUrl())
+                .load(data.getPosterUrl())
                 .placeholder(R.drawable.image_placeholder)
                 .error(R.drawable.image_na)
                 .into(normalViewHolder.posterImageView);
-
-        if(!isNoMoreData() && almostAtEndOfList(position)) {
-            if(!AppUtil.isConnectedToInternet(getContext())) {
-                Toast.makeText(
-                        getContext(),
-                        "Failed to load movies! Please check your internet connection.",
-                        Toast.LENGTH_LONG).show();
-            } else {
-                getNextPage();
-            }
-        }
     }
 
-    private boolean almostAtEndOfList(final int position) {
-        return position == getItemCount() - 1 && !isLoading();
+    @Override
+    protected void loadMoreData() {
+        if(!AppUtil.isConnectedToInternet(getContext())) {
+            Toast.makeText(
+                    getContext(),
+                    "Failed to load movies! Please check your internet connection.",
+                    Toast.LENGTH_LONG).show();
+        } else {
+            getNextPage();
+        }
     }
 
     public void getNextPage() {
@@ -112,10 +104,6 @@ public class MoviePosterAdapter extends BaseRecyclerAdapter<Movie> {
     public boolean sortMethodChanged() {
         final String sortMethod = AppUtil.getSortMethodFromPref(getContext());
         return !sortMethod.equals(this.sortMethod);
-    }
-
-    public String getSortMethod() {
-        return sortMethod;
     }
 
     public void updateSortMethod() {
