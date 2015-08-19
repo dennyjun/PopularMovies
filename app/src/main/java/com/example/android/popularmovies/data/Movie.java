@@ -2,7 +2,6 @@ package com.example.android.popularmovies.data;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.os.Parcelable;
 import android.util.Log;
 
 import com.example.android.popularmovies.R;
@@ -18,7 +17,7 @@ import java.io.Serializable;
 /**
  * Created by Denny on 7/28/2015.
  */
-public class Movie implements Serializable {
+public class Movie implements Serializable, ContentValueContainer, JsonDeserializable {
     private static final String LOG_TAG = Movie.class.getSimpleName();
 
     private boolean adult;
@@ -41,35 +40,73 @@ public class Movie implements Serializable {
         deserialize(c, obj);
     }
 
-    public Movie(final Context context, final Parcelable values) {
-        final ContentValues v = (ContentValues) values;
-        setId(
-                (String) v.get(context.getString(R.string.moviedb_id_param)));
-        setAdult(
-                Boolean.valueOf(v.get(context.getString(R.string.moviedb_adult_param)).toString()));
-        setOriginalLanguage(
-                (String)v.get(context.getString(R.string.moviedb_original_language_param)));
-        setOriginalTitle(
-                (String)v.get(context.getString(R.string.moviedb_original_title_param)));
-        setOverview(
-                (String)v.get(context.getString(R.string.moviedb_overview_param)));
-        setReleaseDate(
-                (String)v.get(context.getString(R.string.moviedb_release_date_param)));
-        setPosterPath(
-                (String)v.get(context.getString(R.string.moviedb_poster_path_param)));
-        setTitle(
-                (String)v.get(context.getString(R.string.moviedb_title_param)));
-        setVideo(
-                Boolean.valueOf(v.get(context.getString(R.string.moviedb_video_param)).toString()));
-        setVoteAverage(
-                Double.valueOf(v.get(context.getString(R.string.moviedb_vote_avg_param)).toString()));
-        setVoteCount(
-                Integer.valueOf(v.get(context.getString(R.string.moviedb_vote_count_param)).toString()));
-        setPosterUrl(
-                (String)v.get(context.getString(R.string.movie_poster_url_param)));
-
+    public Movie(final Context context, final ContentValues values) {
+        readContentValues(context, values);
     }
 
+    @Override
+    public void readContentValues(Context context, ContentValues values) {
+        setId(
+                (String) values.get(context.getString(R.string.moviedb_id_param)));
+        setAdult(
+                Boolean.valueOf(
+                        values.get(context.getString(R.string.moviedb_adult_param)).toString()));
+        setOriginalLanguage(
+                (String)values.get(context.getString(R.string.moviedb_original_language_param)));
+        setOriginalTitle(
+                (String)values.get(context.getString(R.string.moviedb_original_title_param)));
+        setOverview(
+                (String)values.get(context.getString(R.string.moviedb_overview_param)));
+        setReleaseDate(
+                (String)values.get(context.getString(R.string.moviedb_release_date_param)));
+        setPosterPath(
+                (String)values.get(context.getString(R.string.moviedb_poster_path_param)));
+        setTitle(
+                (String)values.get(context.getString(R.string.moviedb_title_param)));
+        setVideo(
+                Boolean.valueOf(values.get(
+                        context.getString(R.string.moviedb_video_param)).toString()));
+        setVoteAverage(
+                Double.valueOf(values.get(
+                        context.getString(R.string.moviedb_vote_avg_param)).toString()));
+        setVoteCount(
+                Integer.valueOf(values.get(
+                        context.getString(R.string.moviedb_vote_count_param)).toString()));
+        setPosterUrl(
+                (String) values.get(context.getString(R.string.movie_poster_url_param)));
+    }
+
+    @Override
+    public ContentValues createContentValues(final Context context) {
+        final ContentValues values = new ContentValues();
+        values.put(context.getString(R.string.moviedb_id_param),
+                getId());
+        values.put(context.getString(R.string.moviedb_adult_param),
+                isAdult());
+        values.put(context.getString(R.string.moviedb_original_language_param),
+                getOriginalLanguage());
+        values.put(context.getString(R.string.moviedb_original_title_param),
+                getOriginalTitle());
+        values.put(context.getString(R.string.moviedb_overview_param),
+                getOverview());
+        values.put(context.getString(R.string.moviedb_release_date_param),
+                getReleaseDate());
+        values.put(context.getString(R.string.moviedb_poster_path_param),
+                getPosterPath());
+        values.put(context.getString(R.string.moviedb_title_param),
+                getTitle());
+        values.put(context.getString(R.string.moviedb_video_param),
+                isVideo());
+        values.put(context.getString(R.string.moviedb_vote_avg_param),
+                getVoteAverage());
+        values.put(context.getString(R.string.moviedb_vote_count_param),
+                getVoteCount());
+        values.put(context.getString(R.string.movie_poster_url_param),
+                getPosterUrl());
+        return values;
+    }
+
+    @Override
     public void deserialize(final Context c, final JSONObject obj) {
         if(obj == null) {
             return;
@@ -107,35 +144,6 @@ public class Movie implements Serializable {
         } catch (JSONException e) {
             Log.e(LOG_TAG, "Unable to deserialize JSONObject.", e);
         }
-    }
-
-    public ContentValues createContentValues(final Context context) {
-        final ContentValues values = new ContentValues();
-        values.put(context.getString(R.string.moviedb_id_param),
-                getId());
-        values.put(context.getString(R.string.moviedb_adult_param),
-                isAdult());
-        values.put(context.getString(R.string.moviedb_original_language_param),
-                getOriginalLanguage());
-        values.put(context.getString(R.string.moviedb_original_title_param),
-                getOriginalTitle());
-        values.put(context.getString(R.string.moviedb_overview_param),
-                getOverview());
-        values.put(context.getString(R.string.moviedb_release_date_param),
-                getReleaseDate());
-        values.put(context.getString(R.string.moviedb_poster_path_param),
-                getPosterPath());
-        values.put(context.getString(R.string.moviedb_title_param),
-                getTitle());
-        values.put(context.getString(R.string.moviedb_video_param),
-                isVideo());
-        values.put(context.getString(R.string.moviedb_vote_avg_param),
-                getVoteAverage());
-        values.put(context.getString(R.string.moviedb_vote_count_param),
-                getVoteCount());
-        values.put(context.getString(R.string.movie_poster_url_param),
-                getPosterUrl());
-        return values;
     }
 
     public String buildLargePosterUrl(final Context c) {

@@ -3,7 +3,6 @@ package com.example.android.popularmovies.data;
 import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
-import android.os.Parcelable;
 import android.util.Log;
 
 import com.example.android.popularmovies.R;
@@ -17,7 +16,7 @@ import java.io.Serializable;
 /**
  * Created by Denny on 8/1/2015.
  */
-public class MovieTrailer implements Serializable {
+public class MovieTrailer implements Serializable, JsonDeserializable, ContentValueContainer {
     private static final String LOG_TAG = MovieTrailer.class.getSimpleName();
 
     private String id;
@@ -31,31 +30,11 @@ public class MovieTrailer implements Serializable {
         deserialize(c, obj);
     }
 
-    public MovieTrailer(final Context context, final Parcelable values) {
-        final ContentValues v = (ContentValues) values;
-        setId(
-                (String) v.get(context.getString(R.string.moviedb_trailer_id_param)));
-        setSite(
-                (String) v.get(context.getString(R.string.moviedb_trailer_site_param)));
-        setKey(
-                (String) v.get(context.getString(R.string.moviedb_trailer_key_param)));
-        setType(
-                (String) v.get(context.getString(R.string.moviedb_trailer_type_param)));
-        setName(
-                (String) v.get(context.getString(R.string.moviedb_trailer_name_param)));
-        setUrl(
-                (String) v.get(context.getString(R.string.moviedb_trailer_url_sql_column_name)));
+    public MovieTrailer(final Context context, final ContentValues values) {
+        readContentValues(context, values);
     }
 
-    private String buildUrl(final Context c) {
-        final Uri.Builder builder = new Uri.Builder();
-        builder.scheme(c.getString(R.string.youtube_scheme))
-                .authority(c.getString(R.string.youtube_base_url))
-                .appendPath(c.getString(R.string.youtube_watch_path))
-                .appendQueryParameter(c.getString(R.string.youtube_video_key_param), getKey());
-        return builder.build().toString();
-    }
-
+    @Override
     public void deserialize(final Context c, final JSONObject obj) {
         if(obj == null) {
             return;
@@ -73,6 +52,24 @@ public class MovieTrailer implements Serializable {
         }
     }
 
+    @Override
+    public void readContentValues(Context context, ContentValues values) {
+        setId(
+                (String) values.get(context.getString(R.string.moviedb_trailer_id_param)));
+        setSite(
+                (String) values.get(context.getString(R.string.moviedb_trailer_site_param)));
+        setKey(
+                (String) values.get(context.getString(R.string.moviedb_trailer_key_param)));
+        setType(
+                (String) values.get(context.getString(R.string.moviedb_trailer_type_param)));
+        setName(
+                (String) values.get(context.getString(R.string.moviedb_trailer_name_param)));
+        setUrl(
+                (String) values.get(context.getString(
+                        R.string.moviedb_trailer_url_sql_column_name)));
+    }
+
+    @Override
     public ContentValues createContentValues(final Context context) {
         final ContentValues values = new ContentValues();
         values.put(context.getString(R.string.moviedb_trailer_id_param),
@@ -88,6 +85,15 @@ public class MovieTrailer implements Serializable {
         values.put(context.getString(R.string.moviedb_trailer_url_sql_column_name),
                 getUrl());
         return values;
+    }
+
+    private String buildUrl(final Context c) {
+        final Uri.Builder builder = new Uri.Builder();
+        builder.scheme(c.getString(R.string.youtube_scheme))
+                .authority(c.getString(R.string.youtube_base_url))
+                .appendPath(c.getString(R.string.youtube_watch_path))
+                .appendQueryParameter(c.getString(R.string.youtube_video_key_param), getKey());
+        return builder.build().toString();
     }
 
     public String getId() {
