@@ -6,8 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 
 import com.example.android.popularmovies.R;
-import com.example.android.popularmovies.database.DbQuery;
-import com.example.android.popularmovies.database.MovieDbHelper;
+import com.example.android.popularmovies.database.helper.MovieDbHelper;
 import com.example.android.popularmovies.providers.MovieContentProvider;
 
 /**
