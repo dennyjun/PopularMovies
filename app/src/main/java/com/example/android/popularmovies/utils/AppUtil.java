@@ -11,6 +11,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.android.popularmovies.R;
 
@@ -58,6 +59,13 @@ public class AppUtil {
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         final NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnected();
+    }
+
+    public static void showNoInternetToast(Context context) {
+        Toast.makeText(
+                context,
+                "Failed to load! Please check your internet connection.",
+                Toast.LENGTH_SHORT).show();
     }
 
     public static boolean isTabletLayout(final Context context) {
