@@ -1,10 +1,7 @@
 package com.example.android.popularmovies.fragments;
 
 
-import android.content.IntentFilter;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,31 +11,21 @@ import android.widget.Toast;
 
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.adapters.recyclerview.MovieReviewAdapter;
-import com.example.android.popularmovies.receivers.OnConnectReceiver;
+import com.example.android.popularmovies.receivers.ManagedReceiver;
 import com.example.android.popularmovies.utils.AppUtil;
+
+import java.util.List;
 
 /**
  *
  */
-public class MovieReviewFragment extends Fragment {
-
+public class MovieReviewFragment extends BaseFragment {
     private RecyclerView reviewsRecyclerView;
     private MovieReviewAdapter movieReviewAdapter;
-    private OnConnectReceiver onConnectReceiver;
 
     public MovieReviewFragment() {
         // Required empty public constructor
     }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelable(getString(R.string.movie_review_recycler_view_state_key),
-                reviewsRecyclerView.getLayoutManager().onSaveInstanceState());
-        outState.putSerializable(getString(R.string.movie_review_adapter_state_key),
-                movieReviewAdapter);
-    }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -61,16 +48,29 @@ public class MovieReviewFragment extends Fragment {
             initMovieReviewAdapter();
         }
 
-        onConnectReceiver = new OnConnectReceiver() {
-            @Override
-            public void run() {
-                if(needToCheckForReviews()) {
-                    initMovieReviewAdapter();
-                }
-            }
-        };
-
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(getString(R.string.movie_review_recycler_view_state_key),
+                reviewsRecyclerView.getLayoutManager().onSaveInstanceState());
+        outState.putSerializable(getString(R.string.movie_review_adapter_state_key),
+                movieReviewAdapter);
+    }
+
+    @Override
+    public List<ManagedReceiver> getReceiversToManage() {
+        // nothing to add, return null
+        return null;
+    }
+
+    @Override
+    public void onInternetConnected() {
+        if(needToCheckForReviews()) {
+            initMovieReviewAdapter();
+        }
     }
 
     private void initMovieReviewAdapter() {
@@ -89,19 +89,6 @@ public class MovieReviewFragment extends Fragment {
         return !(movieReviewAdapter.isNoMoreData()
                 && movieReviewAdapter.getItemCount() == 0)
                 && !movieReviewAdapter.isLoading();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        final IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        getActivity().registerReceiver(onConnectReceiver, intentFilter);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        getActivity().unregisterReceiver(onConnectReceiver);
     }
 
     /**
