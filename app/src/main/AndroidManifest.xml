@@ -21,7 +21,6 @@
             -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -48,10 +47,10 @@
         </activity>
 
         <service
-            android:name=".services.GetMovieService"
+            android:name=".services.FavoriteService"
             android:exported="false" />
         <service
-            android:name=".services.FavoriteService"
+            android:name=".services.GetService"
             android:exported="false" />
 
         <provider
@@ -64,7 +63,7 @@
             android:value="moviedb" />
         <meta-data
             android:name="@string/sql_movie_database_version_meta_data"
-            android:value="4" />
+            android:value="5" />
         <meta-data
             android:name="@string/moviedb_api_key_meta_data"
             android:value="" />
