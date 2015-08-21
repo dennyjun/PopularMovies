@@ -11,7 +11,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getIntent().getParcelableExtra(Intent.EXTRA_STREAM) != null) {
+        if(getIntent().hasExtra(Intent.EXTRA_STREAM)) {
             setContentView(R.layout.activity_movie_details);
         }
     }
