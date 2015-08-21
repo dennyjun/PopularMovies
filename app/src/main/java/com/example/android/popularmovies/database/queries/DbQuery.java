@@ -1,4 +1,4 @@
-package com.example.android.popularmovies.database;
+package com.example.android.popularmovies.database.queries;
 
 import android.content.ContentValues;
 import android.content.Context;

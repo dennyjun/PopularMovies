@@ -34,7 +34,7 @@ import com.example.android.popularmovies.database.helper.MovieDbHelper;
 import com.example.android.popularmovies.listeners.onclick.FullScreenImagePreviewListener;
 import com.example.android.popularmovies.receivers.GetReceiver;
 import com.example.android.popularmovies.receivers.ManagedReceiver;
-import com.example.android.popularmovies.database.FavoriteTrailersQuery;
+import com.example.android.popularmovies.database.queries.FavoriteTrailersQuery;
 import com.example.android.popularmovies.requests.GetRequest;
 import com.example.android.popularmovies.requests.GetRequestResult;
 import com.example.android.popularmovies.requests.GetTrailersRequest;

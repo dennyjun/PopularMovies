@@ -1,4 +1,4 @@
-package com.example.android.popularmovies.database;
+package com.example.android.popularmovies.database.queries;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -7,6 +7,7 @@ import android.net.Uri;
 
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.database.helper.MovieDbHelper;
+import com.example.android.popularmovies.database.queries.DbQuery;
 import com.example.android.popularmovies.providers.MovieContentProvider;
 
 /**
