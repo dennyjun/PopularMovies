@@ -11,7 +11,7 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
 import com.example.android.popularmovies.R;
-import com.example.android.popularmovies.databases.MovieDbHelper;
+import com.example.android.popularmovies.database.MovieDbHelper;
 
 import java.util.Date;
 

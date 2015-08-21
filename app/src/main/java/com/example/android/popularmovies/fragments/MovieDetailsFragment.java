@@ -30,7 +30,7 @@ import com.example.android.popularmovies.adapters.recyclerview.MoviePosterAdapte
 import com.example.android.popularmovies.adapters.recyclerview.MovieTrailerAdapter;
 import com.example.android.popularmovies.data.Movie;
 import com.example.android.popularmovies.data.MovieTrailer;
-import com.example.android.popularmovies.databases.MovieDbHelper;
+import com.example.android.popularmovies.database.MovieDbHelper;
 import com.example.android.popularmovies.listeners.onclick.FullScreenImagePreviewListener;
 import com.example.android.popularmovies.receivers.GetReceiver;
 import com.example.android.popularmovies.receivers.ManagedReceiver;
