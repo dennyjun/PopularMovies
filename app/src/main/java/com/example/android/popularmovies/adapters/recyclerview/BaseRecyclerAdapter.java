@@ -137,14 +137,20 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
         return recyclerList.get(position);
     }
 
+    public void updateItem(final int position, final T data) {
+        recyclerList.set(position, data);
+    }
+
     public void addItem(final T data) {
         recyclerList.add(data);
         notifyItemInserted(recyclerList.size());
     }
 
     public void addItems(final List<T> dataList) {
+        final int position = recyclerList.size();
+        final int itemCount = dataList.size();
         recyclerList.addAll(dataList);
-        notifyDataSetChanged();
+        notifyItemRangeInserted(position, itemCount);
     }
 
     public boolean removeItem(final T data) {
