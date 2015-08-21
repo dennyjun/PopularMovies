@@ -1,13 +1,11 @@
 package com.example.android.popularmovies.fragments;
 
-import android.content.ContentValues;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,24 +22,22 @@ import com.example.android.popularmovies.activities.MovieDetailsActivity;
 import com.example.android.popularmovies.activities.SettingsActivity;
 import com.example.android.popularmovies.adapters.recyclerview.BaseRecyclerAdapter;
 import com.example.android.popularmovies.adapters.recyclerview.MoviePosterAdapter;
-import com.example.android.popularmovies.asynctasks.GetFavoriteMoviesTask;
 import com.example.android.popularmovies.callbacks.OpenMovieDetailsCallback;
 import com.example.android.popularmovies.data.Movie;
-import com.example.android.popularmovies.receivers.FavoriteReceiver;
-import com.example.android.popularmovies.receivers.GetMovieReceiver;
-import com.example.android.popularmovies.receivers.OnConnectReceiver;
+import com.example.android.popularmovies.receivers.GetReceiver;
+import com.example.android.popularmovies.receivers.ManagedReceiver;
+import com.example.android.popularmovies.requests.GetRequestResult;
 import com.example.android.popularmovies.utils.AppUtil;
+
+import java.util.LinkedList;
+import java.util.List;
 
 
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MovieGridFragment extends Fragment {
-    private boolean twoPaneMode = false;
-
-    private GetMovieReceiver getMovieReceiver;
-    private FavoriteReceiver favoriteReceiver;
-    private OnConnectReceiver onConnectReceiver;
+public class MovieGridFragment extends BaseFragment {
+    public static final int REMOVE_FAVORITE_REQUEST_CODE = 100;
 
     private RecyclerView moviesRecyclerView;
     private MoviePosterAdapter moviePosterAdapter;
@@ -54,16 +50,6 @@ public class MovieGridFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        twoPaneMode = AppUtil.isTabletLayout(getActivity().getBaseContext());
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelable(getString(R.string.movie_grid_view_state_key),
-                moviesRecyclerView.getLayoutManager().onSaveInstanceState());
-        outState.putSerializable(getString(R.string.movie_grid_view_adapter_state_key),
-                moviePosterAdapter);
     }
 
     @Override
@@ -90,7 +76,8 @@ public class MovieGridFragment extends Fragment {
         moviesRecyclerView.setHasFixedSize(true);
         final int col =
                 (getActivity().getResources().getConfiguration().orientation ==
-                        Configuration.ORIENTATION_PORTRAIT) || twoPaneMode
+                        Configuration.ORIENTATION_PORTRAIT) ||
+                        AppUtil.isTabletLayout(getActivity().getBaseContext())
                         ? 2
                         : 4;
 
@@ -116,66 +103,56 @@ public class MovieGridFragment extends Fragment {
         } else {
             moviesRecyclerView.setAdapter(moviePosterAdapter);
         }
-        moviePosterAdapter.setOpenMovieDetailsCallback(createOpenMovieDetailsCallback());
 
-        getMovieReceiver = new GetMovieReceiver(moviePosterAdapter);
-        favoriteReceiver = new FavoriteReceiver(moviePosterAdapter);
-        onConnectReceiver = new OnConnectReceiver() {
-            @Override
-            public void run() {
-                if(moviePosterAdapter.sortMethodChanged()) {
-                    AppUtil.removeFragment(getFragmentManager(), MovieDetailsFragment.TAG);
-                    moviePosterAdapter.resetAdapter();
-                    updateMovieGrid();
-                } else if(movieGridNeedsUpdating()) {
-                    updateMovieGrid();
-                }
-            }
-        };
+        moviePosterAdapter.setOpenMovieDetailsCallback(createOpenMovieDetailsCallback());
         return rootView;
     }
 
-    private OpenMovieDetailsCallback createOpenMovieDetailsCallback() {
-        return new OpenMovieDetailsCallback() {
-            @Override
-            public void openMovieDetails(Movie movie) {
-                final Context context = getActivity().getBaseContext();
-                if(twoPaneMode()) {
-                    if(alreadyOpen(movie)) {
-                        return;
-                    }
-                    final MovieDetailsFragment movieDetailsFragment = new MovieDetailsFragment();
-                    final Bundle bundle = new Bundle();
-                    bundle.putParcelable(Intent.EXTRA_STREAM, movie.createContentValues(context));
-                    movieDetailsFragment.setArguments(bundle);
-                    getActivity().getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.movie_details_container,
-                                    movieDetailsFragment,
-                                    MovieDetailsFragment.TAG)
-                            .commit();
-                } else {
-                    final Intent intent = new Intent(context, MovieDetailsActivity.class);
-                    intent.putExtra(Intent.EXTRA_STREAM, movie.createContentValues(context));
-                    startActivity(intent);
-                }
-            }
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateActivityTitle();
+        onInternetConnected();
+    }
 
-            @Override
-            public boolean alreadyOpen(Movie movie) {
-                final FragmentManager fm = getFragmentManager();
-                final MovieDetailsFragment movieDetailsFragment =
-                        (MovieDetailsFragment) fm.findFragmentByTag(MovieDetailsFragment.TAG);
-                return movieDetailsFragment != null
-                        && ((ContentValues)movieDetailsFragment.getMovieParcelable())
-                        .getAsString(getString(R.string.moviedb_id_param))
-                        .equals(movie.getId());
-            }
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(getString(R.string.movie_grid_view_state_key),
+                moviesRecyclerView.getLayoutManager().onSaveInstanceState());
+        outState.putSerializable(getString(R.string.movie_grid_view_adapter_state_key),
+                moviePosterAdapter);
+    }
 
-            @Override
-            public boolean twoPaneMode() {
-                return twoPaneMode;
+    @Override
+    public List<ManagedReceiver> getReceiversToManage() {
+        final List<ManagedReceiver> managedReceivers = new LinkedList<>();
+        final IntentFilter intentFilter = new IntentFilter(GetReceiver.MOVIE_DOWNLOAD_INTENT);
+        managedReceivers.add(new ManagedReceiver(new GetMovieListReceiver(), intentFilter));
+        return managedReceivers;
+    }
+
+    @Override
+    public void onInternetConnected() {
+        if(moviePosterAdapter.sortMethodChanged()) {
+            AppUtil.removeFragment(getFragmentManager(), MovieDetailsFragment.TAG);
+            moviePosterAdapter.resetAdapter();
+            updateMovieGrid();
+        } else if(movieGridNeedsUpdating()) {
+            updateMovieGrid();
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REMOVE_FAVORITE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            final String sortMethod = AppUtil.getSortMethodFromPref(getActivity().getBaseContext());
+            if(sortMethod.equals(getString(R.string.pref_sort_by_favorites))) {
+                final Movie movie = (Movie) data.getSerializableExtra(Intent.EXTRA_STREAM);
+                moviePosterAdapter.removeItem(movie);
             }
-        };
+        }
     }
 
     /**
@@ -191,38 +168,45 @@ public class MovieGridFragment extends Fragment {
                         getString(R.string.movie_grid_view_state_key)));
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        IntentFilter intentFilter = new IntentFilter(GetMovieReceiver.class.getCanonicalName());
-        getActivity().registerReceiver(getMovieReceiver, intentFilter);
-        intentFilter = new IntentFilter(FavoriteReceiver.class.getCanonicalName());
-        getActivity().registerReceiver(favoriteReceiver, intentFilter);
-        intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        getActivity().registerReceiver(onConnectReceiver, intentFilter);
+    private OpenMovieDetailsCallback createOpenMovieDetailsCallback() {
+        return new OpenMovieDetailsCallback() {
+            @Override
+            public void openMovieDetails(final Movie movie) {
+                final Context context = getActivity().getBaseContext();
+                if (twoPaneMode()) {
+                    if (alreadyOpen(movie)) {
+                        return;
+                    }
+                    final MovieDetailsFragment movieDetailsFragment = new MovieDetailsFragment();
+                    final Bundle bundle = new Bundle();
+                    bundle.putSerializable(Intent.EXTRA_STREAM, movie);
+                    movieDetailsFragment.setArguments(bundle);
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.movie_details_container,
+                                    movieDetailsFragment,
+                                    MovieDetailsFragment.TAG)
+                            .commit();
+                } else {
+                    final Intent intent = new Intent(context, MovieDetailsActivity.class);
+                    intent.putExtra(Intent.EXTRA_STREAM, movie);
+                    startActivityForResult(intent, REMOVE_FAVORITE_REQUEST_CODE);
+                }
+            }
 
-        if(moviePosterAdapter.sortMethodChanged()) {
-            AppUtil.removeFragment(getFragmentManager(), MovieDetailsFragment.TAG);
-            moviePosterAdapter.resetAdapter();
-            updateMovieGrid();
-        } else if(movieGridNeedsUpdating()) {
-            updateMovieGrid();
-        }
+            @Override
+            public boolean alreadyOpen(Movie movie) {
+                final FragmentManager fm = getFragmentManager();
+                final MovieDetailsFragment movieDetailsFragment =
+                        (MovieDetailsFragment) fm.findFragmentByTag(MovieDetailsFragment.TAG);
+                return movieDetailsFragment != null
+                        && movieDetailsFragment.getMovie().getId().equals(movie.getId());
+            }
 
-        updateActivityTitle();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        getActivity().unregisterReceiver(getMovieReceiver);
-        getActivity().unregisterReceiver(favoriteReceiver);
-        getActivity().unregisterReceiver(onConnectReceiver);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
+            @Override
+            public boolean twoPaneMode() {
+                return AppUtil.isTabletLayout(getActivity().getBaseContext());
+            }
+        };
     }
 
     private void updateActivityTitle() {
@@ -251,9 +235,7 @@ public class MovieGridFragment extends Fragment {
         final Context context = getActivity().getBaseContext();
         if(getString(R.string.pref_sort_by_favorites).equals(
                 AppUtil.getSortMethodFromPref(context))) {
-            moviePosterAdapter.setLoading(true);
-            moviePosterAdapter.updateSortMethod();
-            new GetFavoriteMoviesTask(context, moviePosterAdapter).execute();
+            moviePosterAdapter.getFavorites();
             return;
         }
 
@@ -266,5 +248,26 @@ public class MovieGridFragment extends Fragment {
         }
 
         moviePosterAdapter.getNextPage();
+    }
+
+    private class GetMovieListReceiver extends GetReceiver {
+        @Override
+        public void onDownloadComplete(Context context, Intent intent) {
+            moviePosterAdapter.hideProgressBar();
+            try {
+                final GetRequestResult<Movie> result =
+                        (GetRequestResult) intent.getSerializableExtra(Intent.EXTRA_STREAM);
+                moviePosterAdapter.addItems(result.dataList);
+                if(moviePosterAdapter.getItemCount() == 0 &&                                        // only stops loading when favorites is not the sort method
+                        !AppUtil.isConnectedToInternet(context)) {
+                    AppUtil.showNoInternetToast(context);
+                    return;
+                }
+                moviePosterAdapter.incrementPage();
+                moviePosterAdapter.setNoMoreData(moviePosterAdapter.getPage() > result.totalPages);
+            } finally {
+                moviePosterAdapter.setLoading(false);
+            }
+        }
     }
 }
