@@ -67,7 +67,9 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                 SqlUtil.formatColumn(context.getString(R.string.moviedb_vote_count_param),
                         DEF_INT),
                 SqlUtil.formatColumn(context.getString(R.string.movie_poster_url_param),
-                        DEF_STR)
+                        DEF_STR),
+                SqlUtil.formatColumn(context.getString(R.string.sql_timestamp_column_name)),
+                        DEF_INT
         ));
     }
 
@@ -86,6 +88,8 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                 SqlUtil.formatColumn(
                         context.getString(R.string.moviedb_trailer_url_sql_column_name),
                         DEF_STR),
+                SqlUtil.formatColumn(context.getString(R.string.sql_timestamp_column_name)),
+                        DEF_INT,
                 SqlUtil.formatColumn(
                         FAVORITES_TABLE_NAME + context.getString(R.string.moviedb_id_param),
                         DEF_STR),

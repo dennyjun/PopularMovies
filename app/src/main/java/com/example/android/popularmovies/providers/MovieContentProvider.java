@@ -13,6 +13,8 @@ import android.net.Uri;
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.databases.MovieDbHelper;
 
+import java.util.Date;
+
 /**
  * Created by Denny on 8/7/2015.
  */
@@ -94,6 +96,8 @@ public class MovieContentProvider extends ContentProvider {
 
     @Override
     public Uri insert(Uri uri, ContentValues values) {
+        values.put(getContext().getString(R.string.sql_timestamp_column_name),
+                new Date().getTime());
         final long id = movieDbHelper.getWritableDatabase().insertWithOnConflict(
                 getTableName(uri),
                 null,
@@ -115,6 +119,8 @@ public class MovieContentProvider extends ContentProvider {
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+        values.put(getContext().getString(R.string.sql_timestamp_column_name),
+                new Date().getTime());
         final String whereClause = buildWhereClause(uri, selection);
         return movieDbHelper.getWritableDatabase().update(
                 getTableName(uri),
