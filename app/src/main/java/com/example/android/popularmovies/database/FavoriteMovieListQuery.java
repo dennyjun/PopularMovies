@@ -1,4 +1,4 @@
-package com.example.android.popularmovies.requests;
+package com.example.android.popularmovies.database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 
 import com.example.android.popularmovies.R;
+import com.example.android.popularmovies.database.DbQuery;
 import com.example.android.popularmovies.providers.MovieContentProvider;
 
 /**

@@ -9,6 +9,8 @@ import android.util.Log;
 
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.data.ContentValueContainer;
+import com.example.android.popularmovies.database.DbQuery;
+import com.example.android.popularmovies.database.DbUpdate;
 import com.example.android.popularmovies.utils.AppUtil;
 import com.example.android.popularmovies.utils.WebUtil;
 
