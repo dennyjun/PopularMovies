@@ -58,7 +58,7 @@ public class MovieTrailerAdapter extends BaseRecyclerAdapter<MovieTrailer> {
                 .placeholder(R.drawable.image_placeholder_horizontal)
                 .error(R.drawable.image_na)
                 .into(movieTrailerViewHolder.previewImageView);
-        setupImageViewToOpenYoutube(movieTrailerViewHolder.previewImageView, movieTrailer);
+        setupImageViewToSeeVideo(movieTrailerViewHolder.previewImageView, movieTrailer);
 
         movieTrailerViewHolder.labelTextView.setText(
                 getContext().getString(R.string.moviedb_trailer_thumbnail_prefix) + (position + 1));
@@ -69,7 +69,7 @@ public class MovieTrailerAdapter extends BaseRecyclerAdapter<MovieTrailer> {
         // doesn't need to load more
     }
 
-    private void setupImageViewToOpenYoutube(final ImageView imageView,
+    private void setupImageViewToSeeVideo(final ImageView imageView,
                                              final MovieTrailer movieTrailer) {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
