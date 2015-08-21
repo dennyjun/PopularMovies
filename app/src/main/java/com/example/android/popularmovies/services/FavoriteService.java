@@ -1,10 +1,15 @@
 package com.example.android.popularmovies.services;
 
 import android.app.IntentService;
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Parcelable;
 import android.util.Log;
 
-import com.example.android.popularmovies.receivers.FavoriteReceiver;
+import com.example.android.popularmovies.R;
+import com.example.android.popularmovies.data.Movie;
+import com.example.android.popularmovies.providers.MovieContentProvider;
 
 /**
  * Created by Denny on 7/28/2015.
@@ -18,31 +23,51 @@ public class FavoriteService extends IntentService {
     public static final String CMD_ADD_TRAILERS = "addTrailers";
 
     public FavoriteService() {
-        super(GetMovieService.class.getSimpleName());
-    }
-    public FavoriteService(String name) {
-        super(name);
+        super(FavoriteService.class.getSimpleName());
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        final Intent broadcastIntent = new Intent(FavoriteReceiver.class.getCanonicalName());
         final String cmd = intent.getStringExtra(INTENT_CMD_PARAM);
-        broadcastIntent.putExtra(INTENT_CMD_PARAM, intent.getStringExtra(INTENT_CMD_PARAM));
         switch (cmd) {
             case CMD_ADD_FAV:
+                addFavorite(getBaseContext(), intent);
+                break;
             case CMD_REM_FAV:
-                broadcastIntent.putExtra(Intent.EXTRA_STREAM,
-                        intent.getParcelableExtra(Intent.EXTRA_STREAM));
+                removeFavorite(getBaseContext(), intent);
                 break;
             case CMD_ADD_TRAILERS:
-                broadcastIntent.putExtra(Intent.EXTRA_STREAM,
-                        intent.getParcelableArrayExtra(Intent.EXTRA_STREAM));
+                addTrailers(getBaseContext(), intent);
                 break;
             default: Log.e(LOG_TAG, "Invalid command.");
         }
+    }
 
-        sendBroadcast(broadcastIntent);
+    private void addFavorite(final Context context, final Intent intent) {
+        final Parcelable movieParcelable = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        final Movie movie = new Movie(context, (ContentValues) movieParcelable);
+        context.getContentResolver().insert(MovieContentProvider.FAVORITES_CONTENT_URI,
+                movie.createContentValues(context));
+    }
+
+    private void removeFavorite(final Context context, final Intent intent) {
+        final Parcelable movieParcelable = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        final Movie movie = new Movie(context, (ContentValues) movieParcelable);
+        context.getContentResolver().delete(MovieContentProvider.FAVORITES_CONTENT_URI,
+                context.getString(R.string.moviedb_id_param) + "=?",
+                new String[]{movie.getId()}
+        );
+    }
+
+    private void addTrailers(final Context context, final Intent intent) {
+        final Parcelable[] values = intent.getParcelableArrayExtra(Intent.EXTRA_STREAM);
+        for(final Parcelable p : values) {
+            if(p == null) {
+                continue;
+            }
+            context.getContentResolver().insert(MovieContentProvider.TRAILERS_CONTENT_URI,
+                    (ContentValues) p);
+        }
     }
 }
 
