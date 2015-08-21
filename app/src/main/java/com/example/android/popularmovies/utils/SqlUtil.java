@@ -29,4 +29,8 @@ public class SqlUtil {
     public static String updateTableQuery(final String tableName) {
         return "DROP TABLE IF EXISTS " + tableName;
     }
+
+    public static int millisToHours(final long ms) {
+        return (int)(ms / (1000 * 60 * 60));
+    }
 }
