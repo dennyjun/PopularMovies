@@ -156,7 +156,8 @@ public class Movie implements ContentValueContainer, JsonDeserializable {
                 getPosterPath());
     }
 
-    private String buildPosterUrl(final Context c, final String posterSize, final String posterPath) {
+    private String buildPosterUrl(final Context c, final String posterSize,
+                                  final String posterPath) {
         return c.getString(R.string.moviedb_poster_path_base_url)
                 + posterSize
                 + posterPath;
