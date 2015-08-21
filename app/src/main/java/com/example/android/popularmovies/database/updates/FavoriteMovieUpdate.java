@@ -1,11 +1,11 @@
-package com.example.android.popularmovies.database;
+package com.example.android.popularmovies.database.updates;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
 
 import com.example.android.popularmovies.R;
-import com.example.android.popularmovies.database.DbUpdate;
+import com.example.android.popularmovies.database.updates.DbUpdate;
 import com.example.android.popularmovies.providers.MovieContentProvider;
 import com.example.android.popularmovies.utils.AppUtil;
 import com.example.android.popularmovies.utils.MovieDbUtil;

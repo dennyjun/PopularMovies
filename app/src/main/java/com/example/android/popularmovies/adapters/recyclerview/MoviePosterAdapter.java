@@ -19,7 +19,7 @@ import com.example.android.popularmovies.callbacks.OpenMovieDetailsCallback;
 import com.example.android.popularmovies.data.Movie;
 import com.example.android.popularmovies.database.queries.FavoriteMovieListQuery;
 import com.example.android.popularmovies.database.queries.FavoriteMovieQuery;
-import com.example.android.popularmovies.database.FavoriteMovieUpdate;
+import com.example.android.popularmovies.database.updates.FavoriteMovieUpdate;
 import com.example.android.popularmovies.requests.GetMovieListRequest;
 import com.example.android.popularmovies.requests.GetRequest;
 import com.example.android.popularmovies.services.GetService;
