@@ -12,14 +12,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.Serializable;
-
 /**
  * Created by Denny on 7/28/2015.
  */
-public class Movie implements Serializable, ContentValueContainer, JsonDeserializable {
+public class Movie implements ContentValueContainer, JsonDeserializable {
     private static final String LOG_TAG = Movie.class.getSimpleName();
 
+    private boolean favorite;
     private boolean adult;
     private String backdropPath;
     private String[] genreIds;
@@ -52,17 +51,17 @@ public class Movie implements Serializable, ContentValueContainer, JsonDeseriali
                 Boolean.valueOf(
                         values.get(context.getString(R.string.moviedb_adult_param)).toString()));
         setOriginalLanguage(
-                (String)values.get(context.getString(R.string.moviedb_original_language_param)));
+                (String) values.get(context.getString(R.string.moviedb_original_language_param)));
         setOriginalTitle(
-                (String)values.get(context.getString(R.string.moviedb_original_title_param)));
+                (String) values.get(context.getString(R.string.moviedb_original_title_param)));
         setOverview(
-                (String)values.get(context.getString(R.string.moviedb_overview_param)));
+                (String) values.get(context.getString(R.string.moviedb_overview_param)));
         setReleaseDate(
-                (String)values.get(context.getString(R.string.moviedb_release_date_param)));
+                (String) values.get(context.getString(R.string.moviedb_release_date_param)));
         setPosterPath(
-                (String)values.get(context.getString(R.string.moviedb_poster_path_param)));
+                (String) values.get(context.getString(R.string.moviedb_poster_path_param)));
         setTitle(
-                (String)values.get(context.getString(R.string.moviedb_title_param)));
+                (String) values.get(context.getString(R.string.moviedb_title_param)));
         setVideo(
                 Boolean.valueOf(values.get(
                         context.getString(R.string.moviedb_video_param)).toString()));
@@ -78,7 +77,7 @@ public class Movie implements Serializable, ContentValueContainer, JsonDeseriali
 
     @Override
     public ContentValues createContentValues(final Context context) {
-        final ContentValues values = new ContentValues();
+        final ContentValues values = new ContentValues((int)Math.ceil(15 * 1.25));                  // Uses a hashmap implementation. Set initial capacity to prevent rehashing.
         values.put(context.getString(R.string.moviedb_id_param),
                 getId());
         values.put(context.getString(R.string.moviedb_adult_param),
@@ -146,6 +145,11 @@ public class Movie implements Serializable, ContentValueContainer, JsonDeseriali
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o) || getId().equals(((Movie) o).getId());
+    }
+
     public String buildLargePosterUrl(final Context c) {
         return buildPosterUrl(c,
                 c.getString(R.string.moviedb_poster_path_size_w500),
@@ -162,14 +166,6 @@ public class Movie implements Serializable, ContentValueContainer, JsonDeseriali
         return buildPosterUrl(c,
                 c.getString(R.string.moviedb_poster_path_size_w185),
                 getPosterPath());
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if(!super.equals(o)) {
-            return getId().equals(((Movie) o).getId());
-        }
-        return true;
     }
 
     public boolean isAdult() {
@@ -290,5 +286,13 @@ public class Movie implements Serializable, ContentValueContainer, JsonDeseriali
 
     public void setPosterUrl(String posterUrl) {
         this.posterUrl = posterUrl;
+    }
+
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
     }
 }

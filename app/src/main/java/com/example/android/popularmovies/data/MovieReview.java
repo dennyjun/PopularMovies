@@ -14,7 +14,7 @@ import java.io.Serializable;
 /**
  * Created by Denny on 8/2/2015.
  */
-public class MovieReview implements Serializable, JsonDeserializable {
+public class MovieReview implements JsonDeserializable, Serializable {
     private static final String LOG_TAG = MovieReview.class.getSimpleName();
 
     private String id;

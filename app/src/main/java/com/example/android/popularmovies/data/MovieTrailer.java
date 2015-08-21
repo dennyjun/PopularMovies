@@ -11,12 +11,10 @@ import com.example.android.popularmovies.utils.JsonUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.Serializable;
-
 /**
  * Created by Denny on 8/1/2015.
  */
-public class MovieTrailer implements Serializable, JsonDeserializable, ContentValueContainer {
+public class MovieTrailer implements ContentValueContainer, JsonDeserializable {
     private static final String LOG_TAG = MovieTrailer.class.getSimpleName();
 
     private String id;
