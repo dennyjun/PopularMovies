@@ -19,12 +19,12 @@ import org.json.JSONObject;
 public class GetReviewsRequest extends GetRequest<MovieReview> {
     @Override
     public String buildDownloadUrl(Context context, Intent intent) {
-        final String id =
-                intent.getStringExtra(context.getString(R.string.moviedb_review_id_param));
+        final String movieId =
+                intent.getStringExtra(context.getString(R.string.moviedb_id_param));
         final String page = intent.getStringExtra(context.getString(R.string.moviedb_page_param));
 
         final Uri.Builder baseUrl = MovieDbUtil.getMovieBaseUri(context);
-        baseUrl.appendPath(id);
+        baseUrl.appendPath(movieId);
         baseUrl.appendPath(context.getString(R.string.moviedb_review_path));
         baseUrl.appendQueryParameter(context.getString(R.string.moviedb_api_key_param),
                 AppUtil.getMetaDataString(context, R.string.moviedb_api_key_meta_data));
