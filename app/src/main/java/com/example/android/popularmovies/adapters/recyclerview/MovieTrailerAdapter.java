@@ -56,7 +56,7 @@ public class MovieTrailerAdapter extends BaseRecyclerAdapter<MovieTrailer> {
                 .load(MovieDbUtil.buildYouTubeThumbnailUrl(getContext(), movieTrailer.getKey()))
                 .centerCrop()
                 .placeholder(R.drawable.image_placeholder_horizontal)
-                .error(R.drawable.image_na)
+                .error(R.drawable.image_na_horizontal)
                 .into(movieTrailerViewHolder.previewImageView);
         setupImageViewToSeeVideo(movieTrailerViewHolder.previewImageView, movieTrailer);
 
