@@ -1,6 +1,7 @@
 package com.example.android.popularmovies.adapters.recyclerview;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,8 +10,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.android.popularmovies.R;
-import com.example.android.popularmovies.asynctasks.GetMovieReviewsTask;
 import com.example.android.popularmovies.data.MovieReview;
+import com.example.android.popularmovies.requests.GetRequest;
+import com.example.android.popularmovies.requests.GetReviewsRequest;
+import com.example.android.popularmovies.services.GetService;
 
 /**
  * Created by Denny on 8/4/2015.
@@ -62,7 +65,13 @@ public class MovieReviewAdapter extends BaseRecyclerAdapter<MovieReview> {
     public void getMoreReviews() {
         setLoading(true);
         showProgressBar();
-        new GetMovieReviewsTask(getContext(), MovieReviewAdapter.this)
-                .execute(movieId, String.valueOf(getPage()));
+        final Intent msg = new Intent(getContext(), GetService.class);
+        msg.putExtra(getContext().getString(R.string.moviedb_id_param),
+                movieId);
+        msg.putExtra(getContext().getString(R.string.moviedb_page_param),
+                String.valueOf(getPage()));
+        msg.putExtra(GetRequest.class.getCanonicalName(),
+                new GetReviewsRequest());
+        getContext().startService(msg);
     }
 }

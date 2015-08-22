@@ -1,6 +1,9 @@
 package com.example.android.popularmovies.fragments;
 
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,9 +14,13 @@ import android.widget.Toast;
 
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.adapters.recyclerview.MovieReviewAdapter;
+import com.example.android.popularmovies.data.MovieReview;
+import com.example.android.popularmovies.receivers.GetReceiver;
 import com.example.android.popularmovies.receivers.ManagedReceiver;
+import com.example.android.popularmovies.requests.GetRequestResult;
 import com.example.android.popularmovies.utils.AppUtil;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -62,8 +69,10 @@ public class MovieReviewFragment extends BaseFragment {
 
     @Override
     public List<ManagedReceiver> getReceiversToManage() {
-        // nothing to add, return null
-        return null;
+        final List<ManagedReceiver> managedReceivers = new LinkedList<>();
+        final IntentFilter intentFilter = new IntentFilter(GetReceiver.REVIEW_DOWNLOAD_INTENT);
+        managedReceivers.add(new ManagedReceiver(new GetReviewsReceiver(), intentFilter));
+        return managedReceivers;
     }
 
     @Override
@@ -103,5 +112,28 @@ public class MovieReviewFragment extends BaseFragment {
                 .getParcelable(getString(R.string.movie_review_recycler_view_state_key)));
     }
 
+    private class GetReviewsReceiver extends GetReceiver {
 
+        @Override
+        public void onDownloadComplete(Context context, Intent intent) {
+            movieReviewAdapter.hideProgressBar();
+            try {
+                final GetRequestResult<MovieReview> result =
+                        (GetRequestResult) intent.getSerializableExtra(Intent.EXTRA_STREAM);
+
+                if (!AppUtil.isConnectedToInternet(context)) {
+                    AppUtil.showNoInternetToast(context);
+                    return;
+                }
+                movieReviewAdapter.addItems(result.dataList);
+                movieReviewAdapter.incrementPage();
+                movieReviewAdapter.setNoMoreData(movieReviewAdapter.getPage() > result.totalPages);
+                if (movieReviewAdapter.isNoMoreData() && movieReviewAdapter.getItemCount() == 0) {
+                    movieReviewAdapter.addItem(null);
+                }
+            } finally {
+                movieReviewAdapter.setLoading(false);
+            }
+        }
+    }
 }
