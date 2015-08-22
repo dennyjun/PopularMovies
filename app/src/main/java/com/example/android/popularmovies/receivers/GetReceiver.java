@@ -10,6 +10,7 @@ import android.content.Intent;
 public abstract class GetReceiver extends BroadcastReceiver {
     public static final String MOVIE_DOWNLOAD_INTENT = "MOVIE_DOWNLOAD";
     public static final String TRAILER_DOWNLOAD_INTENT = "TRAILER_DOWNLOAD";
+    public static final String REVIEW_DOWNLOAD_INTENT = "REVIEW_DOWNLOAD";
 
     @Override
     public void onReceive(Context context, Intent intent) {
