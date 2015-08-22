@@ -27,16 +27,14 @@
         <activity
             android:name=".activities.MovieDetailsActivity"
             android:label="@string/title_activity_movie_details"
-            android:launchMode="singleTop"
-            android:parentActivityName=".activities.MainActivity" >
+            android:launchMode="singleTop" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.android.popularmovies.activities.MainActivity" />
         </activity>
         <activity
             android:name=".activities.MovieReviewsActivity"
-            android:label="Reviews"
-            android:parentActivityName=".activities.MovieDetailsActivity" >
+            android:label="Reviews" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.android.popularmovies.activities.MovieDetailsActivity" />
@@ -55,7 +53,8 @@
 
         <provider
             android:name=".providers.MovieContentProvider"
-            android:authorities="com.example.android.popularmovies.providers.MovieContentProvider" >
+            android:authorities="com.example.android.popularmovies.providers.MovieContentProvider"
+            android:exported="false">
         </provider>
 
         <meta-data
