@@ -20,7 +20,7 @@ import com.example.android.popularmovies.data.Movie;
 import com.example.android.popularmovies.database.queries.FavoriteMovieListQuery;
 import com.example.android.popularmovies.database.queries.FavoriteMovieQuery;
 import com.example.android.popularmovies.database.updates.FavoriteMovieUpdate;
-import com.example.android.popularmovies.requests.GetMovieListRequest;
+import com.example.android.popularmovies.requests.GetMoviesRequest;
 import com.example.android.popularmovies.requests.GetRequest;
 import com.example.android.popularmovies.services.GetService;
 import com.example.android.popularmovies.utils.AppUtil;
@@ -119,7 +119,7 @@ public class MoviePosterAdapter extends BaseRecyclerAdapter<Movie> {
                 msg.putExtra(getContext().getString(R.string.moviedb_sort_by_param), sortMethod);
                 msg.putExtra(getContext().getString(R.string.moviedb_page_param), getPage());
                 msg.putExtra(GetRequest.class.getCanonicalName(),
-                        new GetMovieListRequest());
+                        new GetMoviesRequest());
                 getContext().startService(msg);
             }
         });
@@ -139,7 +139,7 @@ public class MoviePosterAdapter extends BaseRecyclerAdapter<Movie> {
                 final Intent msg = new Intent(getContext(), GetService.class);
                 msg.putExtra(FavoriteMovieListQuery.INTENT_NAME, new FavoriteMovieListQuery());
                 msg.putExtra(GetRequest.class.getCanonicalName(),
-                        new GetMovieListRequest());
+                        new GetMoviesRequest());
                 getContext().startService(msg);
             }
         });

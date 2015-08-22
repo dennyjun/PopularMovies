@@ -15,7 +15,7 @@ import org.json.JSONObject;
 /**
  * Created by Denny on 8/19/2015.
  */
-public class GetMovieListRequest extends GetRequest<Movie> {
+public class GetMoviesRequest extends GetRequest<Movie> {
 
     @Override
     public String buildDownloadUrl(Context context, Intent intent) {
